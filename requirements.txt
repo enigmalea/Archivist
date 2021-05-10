@@ -1,5 +1,5 @@
 discord
-dotenv
+python-dotenv
 apscheduler
 AO3
 disputils

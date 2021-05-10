@@ -167,8 +167,7 @@ settings and subcommands use `< p > settings show`."
             exp = """**WARNING!** This will delete the entire message containing the AO3 link, \
 which will delete any additional information the user posts. If you would \
 like to supress the default Discord embed consider instructing members to use \
-`< >` around their link or turning off link embed permissions in the \
-channels where links are posted instead.
+`< >` around their link.
 ***Please confirm you want to set the bot to delete the user's message by \
 sending `yes`. Update will cancel automatically after 5 seconds.***
 """
