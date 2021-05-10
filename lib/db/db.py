@@ -1,6 +1,7 @@
 # Requires pip install aiosqlite
 from os.path import isfile
 from sqlite3 import connect
+from pytz import timezone
 
 from apscheduler.triggers.cron import CronTrigger
 
@@ -30,7 +31,7 @@ def commit():
 
 
 def autosave(sched):
-    sched.add_job(commit, CronTrigger(second=0))
+    sched.add_job(commit, CronTrigger(second=0, timezone=timezone('America/New_York')))
 
 
 def close():

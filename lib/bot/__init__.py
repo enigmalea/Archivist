@@ -1,6 +1,7 @@
 # Requires pip install apscheduler
 import discord
 import logging
+from pytz import timezone
 from asyncio import sleep
 from discord import Intents
 from glob import glob
@@ -61,7 +62,7 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
 
-        self.scheduler = AsyncIOScheduler()
+        self.scheduler = AsyncIOScheduler(timezone=timezone('America/New_York'))
 
         db.autosave(self.scheduler)
         super().__init__(
