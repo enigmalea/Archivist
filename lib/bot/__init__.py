@@ -1,0 +1,186 @@
+# Requires pip install apscheduler
+import discord
+import logging
+from asyncio import sleep
+from discord import Intents
+from glob import glob
+
+import os
+from dotenv import load_dotenv
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from discord.ext import commands
+from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import CommandNotFound, NoPrivateMessage, UserInputError  # noqa
+from discord.ext.commands import when_mentioned_or
+
+from ..db import db
+
+# ========== ERROR LOGGER ===========
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
+                              mode='w')
+handler.setFormatter(logging.Formatter(
+                     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
+
+# ========== DECLARES INTENTS ===========
+intents = Intents.default()
+intents.typing = False
+intents.presences = False
+
+# ========== LOADS TOKEN ===========
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN")
+
+COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+
+
+def get_prefix(bot, message):
+    if message.guild:
+        prefix = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", message.guild.id)  # noqa
+        return when_mentioned_or(prefix)(bot, message)
+
+
+class Ready(object):
+    def __init__(self):
+        for cog in COGS:
+            setattr(self, cog, False)
+
+    def ready_up(self, cog):
+        setattr(self, cog, True)
+        print(f" {cog} cog ready")
+
+    def all_ready(self):
+        return all([getattr(self, cog) for cog in COGS])
+
+
+class Bot(BotBase):
+    def __init__(self):
+        self.ready = False
+        self.cogs_ready = Ready()
+
+        self.scheduler = AsyncIOScheduler()
+
+        db.autosave(self.scheduler)
+        super().__init__(
+            command_prefix=get_prefix,
+            case_insensitive=True,
+            owner_id=508726665199747100,
+            intents=intents,
+            help_command=None,
+        )
+
+    def setup(self):
+        for cog in COGS:
+            self.load_extension(f"lib.cogs.{cog}")
+
+    def update_db(self):
+        guildids = []
+        for guild in self.guilds:
+            guildids.append(guild.id)
+
+        db.multiexec("INSERT OR IGNORE INTO settings (GuildID) VALUES (?)",
+                     ((guild.id,) for guild in self.guilds))
+
+        to_remove = []
+        stored_guilds = db.column("SELECT GuildID from settings")
+        for GuildID in stored_guilds:
+            if GuildID not in guildids:
+                to_remove.append(GuildID)
+
+        db.multiexec("DELETE FROM settings WHERE GuildID = ?",
+                     ((GuildID,) for GuildID in to_remove))
+
+        db.commit()
+
+    def run(self, version):
+        self.VERSION = version
+        self.TOKEN = token
+
+        self.setup()
+
+        print("running bot...")
+        super().run(self.TOKEN, reconnect=True)
+
+    async def on_connect(self):
+        self.update_db()
+        print(f"Logged in as {bot.user.name}.")
+
+    async def on_disconnect(self):
+        print("Logged out.")
+
+    async def on_error(self, err, *args, **kwargs):
+        if err == "on_command_error":
+            await args[0].send("Something went wrong.")
+
+        raise
+
+    async def on_command_error(self, ctx, exc):
+        ignored = (CommandNotFound, UserInputError, NoPrivateMessage)
+        if isinstance(exc, ignored):
+            return
+
+        if isinstance(exc, commands.CommandOnCooldown):
+            m, s = divmod(exc.retry_after, 60)
+            h, m = divmod(m, 60)
+            if int(h) == 0 and int(m) == 0:  # noqa
+                await ctx.send(f"Command on cooldown. You must wait {int(s)} seconds to use this command. ")  # noqa
+
+        elif isinstance(exc, commands.CheckFailure):
+            await ctx.send("You do not have the required permissions for this command.")  # noqa
+
+        elif hasattr(exc, "original"):
+            raise exc.original
+
+        else:
+            raise exc
+
+    async def on_guild_join(self, guild):
+        db.multiexec("INSERT OR IGNORE INTO settings (GuildID) VALUES (?)",
+                     ((guild.id,) for guild in self.guilds))
+
+        db.commit()
+
+    async def on_guild_remove(self, guild):
+        guildids = []
+        for guild in self.guilds:
+            guildids.append(guild.id)
+
+        to_remove = []
+        stored_guilds = db.column("SELECT GuildID from settings")
+        for GuildID in stored_guilds:
+            if GuildID not in guildids:
+                to_remove.append(GuildID)
+
+        db.multiexec("DELETE FROM settings WHERE GuildID = ?",
+                     ((GuildID,) for GuildID in to_remove))
+
+        db.commit()
+
+# ========== BOT STATUS ===========
+
+    async def on_ready(self):
+        if not self.ready:
+            self.cogs_ready = Ready()
+            self.scheduler.start()
+
+            await bot.change_presence(
+                activity=discord.Activity(type=discord.ActivityType.watching,
+                                          name="$help | Twitter: @BotArchivist"))  # noqa
+
+            while not self.cogs_ready.all_ready():
+                await sleep(0.5)
+
+            self.ready = True
+            print(" bot ready")
+
+    async def on_message(self, message):
+        if message.author == self.user and message.guild:
+            return
+
+        await bot.process_commands(message)
+
+
+bot = Bot()
