@@ -31,8 +31,7 @@ class eventuserlink(Cog):
                 "https://archiveofourown.org/users/" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F]\
-                [0-9a-fA-F]))+', message.content.strip())
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())
             if urls:
                 links = ''.join(urls)
                 link = links.replace('>', '')

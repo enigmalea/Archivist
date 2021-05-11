@@ -20,28 +20,28 @@ class eventserieslink(Cog):
     async def on_message(self, message):
         ctx = await self.bot.get_context(message)
         ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        igncheck = f"{ign}http"
-
         dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        igncheck = f"{ign}http"
 
         if message.author == self.bot.user:
             return
 
         if ctx.command is None and igncheck not in message.content and\
-                "https://archiveofourown.org/series/" in message.content:
+                "https://archiveofourown.org/series" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F]\
-                [0-9a-fA-F]))+', message.content.strip())
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())
             if urls:
                 links = ''.join(urls)
                 link = links.replace('>', '')
 
             sep = '/'
             s = link.split(sep)[4]
-            seriesid = int(s.split()[0])
+            seriesid = int(s.split(sep)[0])
             series = AO3.Series(seriesid)
             seriesurl = f"https://archiveofourown.org/series/{seriesid}"
+
+            series.reload()
 
             c = []
             for series.creators in series.creators:
@@ -96,9 +96,11 @@ class eventserieslink(Cog):
                 embed.set_thumbnail(url="https://i.imgur.com/Ml4X1T6.png")
 
                 embedVar.add_field(name="Series Begun:",
-                                   value=series.series_begun, inline=True)
+                                   value=series.series_begun.strftime(
+                                       '%b %d, %Y'), inline=True)
                 embedVar.add_field(name="Last Updated:",
-                                   value=series.series_updated, inline=True)
+                                   value=series.series_updated.strftime(
+                                       '%b %d, %Y'), inline=True)
                 embedVar.add_field(name="\ufeff", value="\ufeff", inline=True)
 
                 embedVar.add_field(name="Number of Works:",
@@ -109,6 +111,7 @@ class eventserieslink(Cog):
 
                 embedVar.add_field(name="Series Notes:",
                                    value=notes, inline=False)
+
                 embedVar.add_field(name="Series Description:",
                                    value=describe, inline=False)
 
@@ -123,7 +126,7 @@ class eventserieslink(Cog):
                     pass
 
             except Exception:
-                pass
+                raise
 
 
 def setup(bot):
