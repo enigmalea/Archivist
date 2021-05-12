@@ -4,8 +4,8 @@ from typing import Optional
 from discord import Embed
 from discord.utils import get
 from discord.ext.menus import MenuPages, ListPageSource
-from discord.ext import commands
 from discord.ext.commands import Cog
+from discord.ext.commands import command
 
 from ..db import db
 
@@ -37,7 +37,9 @@ class HelpMenu(ListPageSource):
         sup = "Join the Support Server"
         supurl = "https://discord.gg/FzhC9bVFva"
         twit = "Official Twitter"
-        twiturl = "https://twitter.com/BotArchivist"
+        twiturl = "https://twitter.com/_ArchivistBot_"
+        web = "Website"
+        weburl = "https://www.archivistbot.com"
         inv = "Invite to Your Server"
         invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=2148005952&scope=bot"  # noqa
         ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", self.ctx.guild.id)  # noqa
@@ -52,7 +54,8 @@ server by clicking the link.\n\n__**To ignore a link:**__\nIf you would like \
 to post an AO3 link without having the bot populate an embed, place a `{ign}` \
 in front of the link:\n**Ex:** \
 `{ign}https://archiveofourown.org/works/26353378`\n\n__**Important \
-Links**__\n▸ [{sup}]({supurl})\n▸ [{twit}]({twiturl})\n▸ [{inv}]({invurl})"""
+Links**__\n▸ [{sup}]({supurl})\n▸ [{web}]({weburl})\n▸ [{twit}]({twiturl})\n▸ \
+[{inv}]({invurl})"""
         offset = (menu.current_page*self.per_page) + 1
         len_data = len(self.entries)
 

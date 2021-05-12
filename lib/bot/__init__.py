@@ -62,7 +62,7 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
 
-        self.scheduler = AsyncIOScheduler(timezone=timezone('America/New_York'))
+        self.scheduler = AsyncIOScheduler(timezone=timezone('America/New_York'))  # noqa
 
         db.autosave(self.scheduler)
         super().__init__(
@@ -169,7 +169,7 @@ class Bot(BotBase):
 
             await bot.change_presence(
                 activity=discord.Activity(type=discord.ActivityType.watching,
-                                          name="$help | Twitter: @BotArchivist"))  # noqa
+                                          name="$help | archivistbot.com"))  # noqa
 
             while not self.cogs_ready.all_ready():
                 await sleep(0.5)

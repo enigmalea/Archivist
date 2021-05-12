@@ -90,6 +90,17 @@ class admin(Cog):
 
             await ctx.send(embed=embed)
 
+    @command(name='ping', brief="pings the server")
+    @commands.is_owner()
+    @commands.guild_only()
+    async def ping(self, ctx):
+        """
+        Pings, pings, and provides latency.
+        """
+        latency = round(self.bot.latency * 1000)
+        msg = f"Pong! The server responded in {latency}ms."
+        await ctx.send(msg)
+
 
 def setup(bot):
     bot.add_cog(admin(bot))
