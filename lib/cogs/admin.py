@@ -2,6 +2,7 @@
 import discord
 import platform
 import asyncio
+import dbots
 
 from discord.ext import commands
 from discord.ext.commands import Cog, command
@@ -100,6 +101,32 @@ class admin(Cog):
         latency = round(self.bot.latency * 1000)
         msg = f"Pong! The server responded in {latency}ms."
         await ctx.send(msg)
+
+    @command(name='post', brief="posts server count")
+    @commands.is_owner()
+    @commands.guild_only()
+    async def post(self, ctx: commands.Context):
+        """
+        Manually posts server count using discordlists.py (BotBlock)
+        """
+        client_id = '812505952959856690'
+
+        def server_count():
+            return len(self.bot.guilds)
+
+        def user_count():
+            pass
+
+        def voice_connections():
+            pass
+
+        poster = dbots.Poster(client_id, server_count, user_count,
+                              voice_connections, api_keys={
+                                  'discordbotlist.com': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0IjoxLCJpZCI6IjgxMjUwNTk1Mjk1OTg1NjY5MCIsImlhdCI6MTYyMTc3NzkxM30.lipbPqW2WNAyHZPGafWW-Py-jFX2AM92AZ8wsSRii0Y',
+                              })
+
+        await poster.post()
+        await ctx.send("Server count has been posted.")
 
 
 def setup(bot):
