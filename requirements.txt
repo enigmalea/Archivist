@@ -13,3 +13,4 @@ apscheduler>=3.7.0
 ao3_api
 disputils
 dbots
+dblpy

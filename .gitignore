@@ -154,10 +154,12 @@ dmypy.json
 *.DS_Store
 # thumbnail cache on Windows
 Thumbs.db
-*.db
 
 # profiling data
 .prof
 
+# custom files
+*.db
+botlist.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python

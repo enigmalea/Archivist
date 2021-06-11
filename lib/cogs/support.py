@@ -40,6 +40,7 @@ Support Server to share it with the dev.
 
 **▸ Vote and rate the bot on botlists**
 \u279f [DiscordBotList](https://discordbotlist.com/bots/archivist)
+\u279f [top.gg](https://top.gg/bot/812505952959856690)
 
 **▸ Tell your friends**
 \u279f Post about <:logo:848627809647329320> **Archivist** on tumblr, \
