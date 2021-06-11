@@ -129,6 +129,7 @@ class admin(Cog):
         poster = dbots.Poster(client_id, server_count, user_count,
                               voice_connections, api_keys={
                                   'discordbotlist.com': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0IjoxLCJpZCI6IjgxMjUwNTk1Mjk1OTg1NjY5MCIsImlhdCI6MTYyMTc3NzkxM30.lipbPqW2WNAyHZPGafWW-Py-jFX2AM92AZ8wsSRii0Y',
+                                  'top.gg': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxMjUwNTk1Mjk1OTg1NjY5MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjIzNDE1NTE0fQ.eCCxWcq3c5SlLoVzFd6O3wPVeoSq94gyPVLnJD83EqU',
                               })
 
         await poster.post()
