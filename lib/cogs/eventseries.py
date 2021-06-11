@@ -13,14 +13,14 @@ import AO3
 from ..db import db
 
 
-class eventserieslink(Cog):
+class eventseries(Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-            self.bot.cogs_ready.ready_up('eventserieslink')
+            self.bot.cogs_ready.ready_up('eventseries')
 
     @Cog.listener()
     async def on_message(self, message):
@@ -36,7 +36,7 @@ class eventserieslink(Cog):
                 "https://archiveofourown.org/series" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
             if urls:
                 links = ''.join(urls)
                 link = links.replace('>', '')
@@ -136,4 +136,4 @@ class eventserieslink(Cog):
 
 
 def setup(bot):
-    bot.add_cog(eventserieslink(bot))
+    bot.add_cog(eventseries(bot))

@@ -1,0 +1,326 @@
+
+# //          Copyright Amber Whitlock aka enigmalea 2021
+# // Distributed under the Boost Software License, Version 1.0.
+# //    (See accompanying file LICENSE_1_0.txt or copy at
+# //          https://www.boost.org/LICENSE_1_0.txt)
+
+# Requires pip install ao3_api
+import discord
+from discord.ext import commands
+from discord.ext.commands import Cog, command, MissingRequiredArgument
+import AO3
+
+from ..db import db
+
+
+class chapter(Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+            self.bot.cogs_ready.ready_up('chapter')
+
+    @command(name="update", aliases=["up", "chapter", "ch"],
+             brief="Provides an embed for a chapter update.")
+    @commands.guild_only()
+    async def ch_update(self, ctx, chnum, link: str):
+        """
+        Shows an embed for chapter updates.\n▸`<p>update [chapter#] [link]`
+        """
+        pub = db.field("SELECT cPubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        fan = db.field("SELECT cFan FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        rel = db.field("SELECT cRel FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        cha = db.field("SELECT cCh FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        ta = db.field("SELECT cAddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        summ = db.field("SELECT cSumm FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        summlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+
+        if "http" in chnum:
+            message = """You may have entered required arguments in the
+wrong order. Please try again using the format \
+`<p>update [chapter#] [link]`, i.e.
+`$update 10 https://archiveofourown.org/works/17363696/chapters/40857350`."""
+            if delerr == "on":
+                await ctx.send(message, delete_after=30)
+                if delcom == "on":
+                    await ctx.message.delete()
+            else:
+                await ctx.send(message)
+                if delcom == "on":
+                    await ctx.message.delete()
+            pass
+
+        elif "https://archiveofourown.org/works/" not in link:
+            message = 'That does not appear to be a link to an AO3 work.\
+Please make sure you are linking to the work and not a series, author, \
+collection, or using a non-AO3 link.'
+            if delerr == "on":
+                await ctx.send(message, delete_after=30)
+                if delcom == "on":
+                    await ctx.message.delete()
+            else:
+                await ctx.send(message)
+                if delcom == "on":
+                    await ctx.message.delete()
+            pass
+
+        else:
+            if "https://archiveofourown.org/works/" in link:
+                workid = AO3.utils.workid_from_url(link)
+
+                if int(chnum) >= 1:
+                    try:
+                        ch_int = int(chnum)
+                        ch = ch_int - 1
+                        work = AO3.Work(workid)
+                        chapter = work.chapters[ch]
+
+                    except IndexError:
+                        inderror = 'That chapter does not appear to exist. \
+Please double check the chapter number you provided and try again.'
+                        if delerr == "on":
+                            await ctx.send(inderror, delete_after=30)
+                            if delcom == "on":
+                                await ctx.message.delete()
+                        else:
+                            await ctx.send(inderror)
+                            if delcom == "on":
+                                await ctx.message.delete()
+
+                    except AO3.utils.AuthError:
+                        autherr = """I'm sorry. This fic is available to Registered \
+Users of AO3 only. In order to protect the author's privacy, I will not \
+display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+                        if delerr == "on":
+                            await ctx.send(autherr, delete_after=30)
+                            if delcom == "on":
+                                await ctx.message.delete()
+                        else:
+                            await ctx.send(autherr)
+                            if delcom == "on":
+                                await ctx.message.delete()
+                else:
+                    cherr = 'Chapter number should be greater than 1.'
+                    if delerr == "on":
+                        await ctx.send(cherr, delete_after=30)
+                        if delcom == "on":
+                            await ctx.message.delete()
+                    else:
+                        await ctx.send(cherr)
+                        if delcom == "on":
+                            await ctx.message.delete()
+
+                chaptitle = f"Chapter {chapter.number} of {work.title}: {chapter.title}"  # noqa
+                words = f"**{chapter.words}** [{work.words}]"
+                warn = ', '.join(work.warnings)
+
+                rawchap = f"{chapter.number}/{work.expected_chapters}"
+                if "None" in rawchap:
+                    chaps = f"{chapter.number}/?"
+                else:
+                    chaps = rawchap
+
+                if len(work.metadata["series"]) != 0:
+                    dd = work._soup.find("dd", {"class": "series"})
+                    if dd is None:
+                        pass
+
+                    for span in dd.find_all("span", {"class": "position"}):
+                        seriesid = int(span.a.attrs["href"].split("/")[-1])
+
+                    ser = AO3.Series(seriesid)
+                    serurl = f"https://archiveofourown.org/series/{seriesid}"
+                    seri = f"\n**Series:** [{ser.name}]({serurl})"
+                else:
+                    seri = ""
+
+                c = []
+                for work.authors in work.authors:
+                    if "(" in work.authors.username:
+                        sep1 = ' ('
+                        un = work.authors.username.split(sep1)[0]
+                        a = work.authors.username.split(sep1)[1]
+                        b = a[:-1]
+                        li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  # noqa
+                        c.append(f"[{un}]({li})")
+                    else:
+                        un = work.authors.username
+                        li = f"https://archiveofourown.org/users/{un}"
+                        c.append(f"[{un}]({li})")
+
+                aut = ', '.join(c)
+
+                if " Anonymous " in un:
+                    auth = "*Anonymous*"
+                else:
+                    auth = aut
+
+                desc = f"by {auth}{seri}\
+\n[__**READ FROM BEGINNING**__]({work.url})\u200b"
+
+                rawtags = ', '.join(work.tags)
+                if len(rawtags) > 1000:
+                    tags = f"{rawtags[0:700]}\n`Click link for more info`"
+                elif len(rawtags) == 0:
+                    tags = "*N/A*"
+                else:
+                    tags = rawtags
+
+                rawcats = ', '.join(work.categories)
+                if len(rawcats) > 1000:
+                    categories = f"{rawcats[0:700]}\n`Click link for more info`"  # noqa
+                elif len(rawcats) == 0:
+                    categories = "*N/A*"
+                else:
+                    categories = rawcats
+
+                rawfan = ', '.join(work.fandoms)
+                if len(rawfan) > 1000:
+                    fandoms = f"{rawfan[0:700]}\n`Click link for more info`"
+                else:
+                    fandoms = rawfan
+
+                ships = ', '.join(work.relationships)
+                if len(ships) > 1000:
+                    relationships = f"{ships[0:700]}\n`Click link for more info`"  # noqa
+                elif len(ships) == 0:
+                    relationships = "*N/A*"
+                else:
+                    relationships = ships
+
+                chars = ', '.join(work.characters)
+                if len(chars) > 1000:
+                    characters = f"{chars[0:700]}\n`Click link for more info`"
+                elif len(chars) == 0:
+                    characters = "*N/A*"
+                else:
+                    characters = chars
+
+                if len(chapter.summary) > summlen:
+                    summary = f"{chapter.summary[0:summlen]}\n`Click link for more info`"  # noqa
+                elif len(chapter.summary) == 0:
+                    summary = "*N/A*"
+                else:
+                    summary = chapter.summary
+
+            # sets up changing embed color based on rating of work
+                if work.rating.startswith('G'):
+                    value = 0x77A50E
+                elif work.rating.startswith('T'):
+                    value = 0xE8D506
+                elif work.rating.startswith('M'):
+                    value = 0xDE7E28
+                else:
+                    value = 0x9C0000
+
+            # adds image preview for artwork in chapters
+                images = work.get_images()
+                if images.get(ch_int) is None:
+                    img = "https://i.imgur.com/Ml4X1T6.png"
+
+                else:
+                    chimgs = images.get(ch_int)
+                    chimg = chimgs[0]
+                    img = chimg[0]
+
+            # embed formatting for AO3 work embed
+                try:
+                    embed = embedVar = discord.Embed(
+                        title=chaptitle, description=desc, url=link,
+                        color=value)
+
+                    embed.set_author(name="Archive of Our Own")
+                    embed.set_thumbnail(url=img)
+
+                    embedVar.add_field(name="Words:", value=words,
+                                       inline=True)
+                    embedVar.add_field(name="Chapters:", value=chaps,
+                                       inline=True)
+                    embedVar.add_field(name="Language:", value=work.language,
+                                       inline=True)
+                    if pub == "on":
+                        embedVar.add_field(name="Published:",
+                                           value=work.date_published.strftime(
+                                               '%b %d, %Y'), inline=True)
+                        embedVar.add_field(name="Updated:",
+                                           value=work.date_updated.strftime(
+                                               '%b %d, %Y'), inline=True)
+                        embedVar.add_field(name="Status:", value=work.status,
+                                           inline=True)
+                    else:
+                        pass
+
+                    embedVar.add_field(name="Rating:", value=work.rating,
+                                       inline=True)
+                    embedVar.add_field(name="Warnings:", value=warn,
+                                       inline=True)
+                    embedVar.add_field(name="Categories:", value=categories,
+                                       inline=True)
+
+                    if fan == "on":
+                        embedVar.add_field(name="Fandoms:", value=fandoms,
+                                           inline=False)
+                    else:
+                        pass
+
+                    if rel == "on":
+                        embedVar.add_field(name="Relationships:",
+                                           value=relationships,
+                                           inline=False)
+                    else:
+                        pass
+
+                    if cha == "on":
+                        embedVar.add_field(name="Characters:",
+                                           value=characters, inline=False)
+                    else:
+                        pass
+
+                    if ta == "on":
+                        embedVar.add_field(name="Additional Tags:", value=tags,
+                                           inline=False)
+                    else:
+                        pass
+
+                    if summ == "on":
+                        embedVar.add_field(name="Summary:", value=summary,
+                                           inline=False)
+                    else:
+                        pass
+
+                    embed.set_footer(text='bot not affiliated with OTW or AO3')
+
+            # sends embed
+                    await ctx.send(embed=embedVar)
+
+                    if delcom == "on":
+                        await ctx.message.delete()
+
+                except Exception:
+                    pass
+
+    @ch_update.error
+    async def missingarg(self, ctx, error):
+        if isinstance(error, MissingRequiredArgument):
+            delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+            delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+            missingarg = 'This command requires two arguments: chapter number \
+and a link to a fic. Please try again using the format \
+`<p>update [chapter#] [link]`, i.e. \
+`$update 10 https://archiveofourown.org/works/17363696/chapters/40857350`.'
+            if delerr == "on":
+                await ctx.send(missingarg, delete_after=30)
+                if delcom == "on":
+                    await ctx.message.delete()
+            else:
+                await ctx.send(missingarg)
+                if delcom == "on":
+                    await ctx.message.delete()
+
+
+def setup(bot):
+    bot.add_cog(chapter(bot))

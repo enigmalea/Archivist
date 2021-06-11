@@ -10,6 +10,6 @@ git+https://github.com/Rapptz/discord-ext-menus
 pytz
 python-dotenv>=0.17.1
 apscheduler>=3.7.0
-ao3_api==2.0.8
+ao3_api
 disputils
 dbots

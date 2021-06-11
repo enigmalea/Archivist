@@ -77,6 +77,8 @@ class Bot(BotBase):
             owner_id=508726665199747100,
             intents=intents,
             help_command=None,
+            activity=discord.Activity(type=discord.ActivityType.watching,
+                                      name="$help | archivistbot.com")
         )
 
     def setup(self):
@@ -108,15 +110,17 @@ class Bot(BotBase):
 
         self.setup()
 
-        print("running bot...")
+        print("attempting to start bot...")
+        print(' ')
         super().run(self.TOKEN, reconnect=True)
 
     async def on_connect(self):
         self.update_db()
-        print(f"Logged in as {bot.user.name}.")
+        print(f"successfully logged in as {bot.user.name}.")
+        print(' ')
 
     async def on_disconnect(self):
-        print("Logged out.")
+        print("logged out.")
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
@@ -173,15 +177,12 @@ class Bot(BotBase):
             self.cogs_ready = Ready()
             self.scheduler.start()
 
-            await bot.change_presence(
-                activity=discord.Activity(type=discord.ActivityType.watching,
-                                          name="$help | archivistbot.com"))  # noqa
-
             while not self.cogs_ready.all_ready():
                 await sleep(0.5)
 
             self.ready = True
-            print(" bot ready")
+            print(" ")
+            print("BOT READY!")
 
     async def on_message(self, message):
         if message.author == self.user and message.guild:

@@ -13,14 +13,14 @@ import AO3
 from ..db import db
 
 
-class eventuserlink(Cog):
+class eventuser(Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-            self.bot.cogs_ready.ready_up('eventuserlink')
+            self.bot.cogs_ready.ready_up('eventuser')
 
     @Cog.listener()
     async def on_message(self, message):
@@ -37,7 +37,7 @@ class eventuserlink(Cog):
                 "https://archiveofourown.org/users/" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
             if urls:
                 links = ''.join(urls)
                 link = links.replace('>', '')
@@ -88,4 +88,4 @@ class eventuserlink(Cog):
 
 
 def setup(bot):
-    bot.add_cog(eventuserlink(bot))
+    bot.add_cog(eventuser(bot))
