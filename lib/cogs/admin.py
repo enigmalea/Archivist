@@ -8,7 +8,6 @@
 import discord
 import platform
 import asyncio
-import dbots
 
 from discord.ext import commands
 from discord.ext.commands import Cog, command
