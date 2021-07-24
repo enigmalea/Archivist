@@ -38,6 +38,7 @@ class chapter(Cog):
         summlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         if "http" in chnum:
             message = """You may have entered required arguments in the
@@ -54,8 +55,8 @@ wrong order. Please try again using the format \
                     await ctx.message.delete()
             pass
 
-        elif "https://archiveofourown.org/works/" not in link:
-            message = 'That does not appear to be a link to an AO3 work.\
+        elif "works" not in link:
+            message = 'That does not appear to be a link to an AO3 work. \
 Please make sure you are linking to the work and not a series, author, \
 collection, or using a non-AO3 link.'
             if delerr == "on":
@@ -69,7 +70,7 @@ collection, or using a non-AO3 link.'
             pass
 
         else:
-            if "https://archiveofourown.org/works/" in link:
+            if "works" in link:
                 workid = AO3.utils.workid_from_url(link)
 
                 if int(chnum) >= 1:
@@ -114,7 +115,16 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                         if delcom == "on":
                             await ctx.message.delete()
 
-                chaptitle = f"Chapter {chapter.number} of {work.title}: {chapter.title}"  # noqa
+                if len(chapter.title) != 0:
+                    title = f"Chapter {chapter.number}: {chapter.title}"
+                    ctitle = title.upper()
+                    chtitle = f"**[{ctitle}]({link})**"  # noqa
+                else:
+                    title = f"Chapter {chapter.number}"
+                    ctitle = title.upper()
+                    chtitle = f"**[{ctitle}]({link})**"  # noqa
+
+                fic = f"\n\n▸ [__READ FROM BEGINNING__]({work.url})\n\u200B"
                 words = f"**{chapter.words}** [{work.words}]"
                 warn = ', '.join(work.warnings)
 
@@ -159,8 +169,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 else:
                     auth = aut
 
-                desc = f"by {auth}{seri}\
-\n[__**READ FROM BEGINNING**__]({work.url})\u200b"
+                desc = f"{chtitle}\nby {auth}{seri}{fic}"
 
                 rawtags = ', '.join(work.tags)
                 if len(rawtags) > 1000:
@@ -169,14 +178,6 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                     tags = "*N/A*"
                 else:
                     tags = rawtags
-
-                rawcats = ', '.join(work.categories)
-                if len(rawcats) > 1000:
-                    categories = f"{rawcats[0:700]}\n`Click link for more info`"  # noqa
-                elif len(rawcats) == 0:
-                    categories = "*N/A*"
-                else:
-                    categories = rawcats
 
                 rawfan = ', '.join(work.fandoms)
                 if len(rawfan) > 1000:
@@ -200,38 +201,62 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 else:
                     characters = chars
 
-                if len(chapter.summary) > summlen:
-                    summary = f"{chapter.summary[0:summlen]}\n`Click link for more info`"  # noqa
-                elif len(chapter.summary) == 0:
+                if len(work.summary) > summlen:
+                    sum = work.summary[0:summlen]
+                    summa = sum.rsplit(' ', 1)[0]
+                    summary = f"{summa}\n`Click link for more info`"
+                elif len(work.summary) == 0:
                     summary = "*N/A*"
                 else:
-                    summary = chapter.summary
+                    summary = work.summary
 
-            # sets up changing embed color based on rating of work
+    # sets up changing embed color based on rating of work
                 if work.rating.startswith('G'):
                     value = 0x77A50E
                 elif work.rating.startswith('T'):
                     value = 0xE8D506
                 elif work.rating.startswith('M'):
                     value = 0xDE7E28
-                else:
+                elif work.rating.startswith('E'):
                     value = 0x9C0000
+                else:
+                    value = 0xFFFFFF
+
+    # sets rating as icon from AO3
+
+                if work.rating.startswith('G'):
+                    icon = "<:general:866823809180631040>"
+                elif work.rating.startswith('T'):
+                    icon = "<:teen:866823893015330826>"
+                elif work.rating.startswith('M'):
+                    icon = "<:mature:866823956684996628>"
+                elif work.rating.startswith('E'):
+                    icon = "<:explicit:866824069050269736>"
+                else:
+                    icon = "<:notrated:866825856236519426>"
 
             # adds image preview for artwork in chapters
-                images = work.get_images()
-                if images.get(ch_int) is None:
-                    img = "https://i.imgur.com/Ml4X1T6.png"
+                if image == "on":
+                    try:
+                        images = work.get_images()
+                        if len(images) == 0:
+                            img = "https://i.imgur.com/Ml4X1T6.png"
+
+                        else:
+                            chimgs = images.get(1)
+                            chimg = chimgs[0]
+                            img = chimg[0]
+
+                    except Exception:
+                        img = "https://i.imgur.com/Ml4X1T6.png"
 
                 else:
-                    chimgs = images.get(ch_int)
-                    chimg = chimgs[0]
-                    img = chimg[0]
+                    img = "https://i.imgur.com/Ml4X1T6.png"
 
             # embed formatting for AO3 work embed
                 try:
                     embed = embedVar = discord.Embed(
-                        title=chaptitle, description=desc, url=link,
-                        color=value)
+                        title=work.title, description=desc, color=value)
 
                     embed.set_author(name="Archive of Our Own")
                     embed.set_thumbnail(url=img)
@@ -240,8 +265,9 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                                        inline=True)
                     embedVar.add_field(name="Chapters:", value=chaps,
                                        inline=True)
-                    embedVar.add_field(name="Language:", value=work.language,
+                    embedVar.add_field(name="Rating:", value=icon,
                                        inline=True)
+
                     if pub == "on":
                         embedVar.add_field(name="Published:",
                                            value=work.date_published.strftime(
@@ -254,12 +280,8 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                     else:
                         pass
 
-                    embedVar.add_field(name="Rating:", value=work.rating,
-                                       inline=True)
                     embedVar.add_field(name="Warnings:", value=warn,
-                                       inline=True)
-                    embedVar.add_field(name="Categories:", value=categories,
-                                       inline=True)
+                                       inline=False)
 
                     if fan == "on":
                         embedVar.add_field(name="Fandoms:", value=fandoms,

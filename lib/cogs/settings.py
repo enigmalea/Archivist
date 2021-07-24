@@ -73,6 +73,24 @@ settings and subcommands use `< p > settings show`."
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
 
+    @myset.command(name="img")
+    @commands.guild_only()
+    @has_permissions(manage_guild=True)
+    @cooldown(1, 10, commands.BucketType.guild)
+    async def change_img(self, ctx, onoff: str):
+        """Toggles image previews on or off in fic and chapter embeds."""
+
+        if onoff == "on":
+            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            await ctx.send(f"Image previews have been turned `{onoff}`.")
+
+        elif onoff == "off":
+            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            await ctx.send(f"Image previews been turned `{onoff}`.")
+
+        else:
+            await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
+
     @myset.command(name="rel")
     @commands.guild_only()
     @has_permissions(manage_guild=True)
@@ -175,7 +193,7 @@ which will delete any additional information the user posts. If you would \
 like to suppress the default Discord embed consider instructing members to \
 use `< >` around their link.
 ***Please confirm you want to set the bot to delete the user's message by \
-sending `yes`. Update will cancel automatically after 5 seconds.***
+sending `yes`. Update will cancel automatically after 15 seconds.***
 """
 
             await ctx.send(exp)
@@ -184,7 +202,7 @@ sending `yes`. Update will cancel automatically after 5 seconds.***
                 return m.content == 'yes' and m.channel == channel
 
             try:
-                await self.bot.wait_for('message', check=is_yes, timeout=5.0)
+                await self.bot.wait_for('message', check=is_yes, timeout=15.0)
                 db.execute("UPDATE settings SET DelLink = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
                 await ctx.send(f"Delete link has been turned `{onoff}`.")
 
@@ -384,6 +402,24 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
 
+    @myset.command(name="dcha")
+    @commands.guild_only()
+    @has_permissions(manage_guild=True)
+    @cooldown(1, 10, commands.BucketType.guild)
+    async def change_deletechaptercommand(self, ctx, onoff: str):
+        """Deletes chapter command executions."""  # noqa
+
+        if onoff == "on":
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            await ctx.send("Chapter commands will be deleted after execution.")
+
+        elif onoff == "off":
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            await ctx.send("Chapter commands will not be deleted.")
+
+        else:
+            await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
+
     @myset.command(name="show", aliases=["view"],
                    brief="Shows the server's settings")
     @commands.guild_only()
@@ -409,6 +445,7 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
         delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         pref = f"```fix\n {pre}```Use `<p>prefix set` to change.\n\ufeff"
         igno = f"```fix\n {ign}```Use `<p>ignore set` to change.\n\ufeff"
@@ -455,9 +492,16 @@ embeds.***\nUse `<p>settings sum [on or off]` to change.\n\ufeff"
             sum = f"```diff\n- {summ}```***If off, hides summary in fic link \
 embeds.***\nUse `<p>settings sum [on or off]` to change.\n\ufeff"
 
-        sumlen = f"```fix\n {summlen}```***If off, summary is not hidden, sets \
-the maximum number of characters for the summary. Default is 700. Must be \
-between 10 and 700.***\nUse `<p>settings len [number]` to change.\n\ufeff"
+        if image == "on":
+            img = f"```diff\n+ {image}```***If off, hides image preview in fic \
+link embeds.***\nUse `<p>settings img [on or off]` to change.\n\ufeff"
+        else:
+            img = f"```diff\n- {image}```***If off, hides image preview in fic \
+link embeds.***\nUse `<p>settings sum [on or off]` to change.\n\ufeff"
+
+        sumlen = f"```fix\n {summlen}```***Sets the maximum number of \
+characters for the summary. Default is 700. Must be between 10 and \
+700.***\nUse `<p>settings len [number]` to change.\n\ufeff"
 
         if dellink == "on":
             delli = f"```diff\n+ {dellink}```***If off, original user message \
@@ -514,10 +558,9 @@ embeds.***\nUse `<p>settings csum [on or off]` to change.\n\ufeff"
             csum = f"```diff\n- {csumm}```***If off, hides summary in fic link \
 embeds.***\nUse `<p>settings csum [on or off]` to change.\n\ufeff"
 
-        csumlen = f"```fix\n {csummlen}```***If summary is not hidden, sets \
-the maximum number of characters for the summary in the chapter update embed. \
-Default is 700. Must be between 10 and 700.***\nUse \
-`<p>settings clen [number]` to change.\n\ufeff"
+        csumlen = f"```fix\n {csummlen}```***Sets the maximum number of \
+characters for the summary in the chapter update embed. Default is 700. Must \
+be between 10 and 700.***\nUse `<p>settings clen [number]` to change.\n\ufeff"
 
         if delcom == "on":
             delco = f"```diff\n+ {delcom}```***If off, any use of `$update` or\
@@ -550,17 +593,20 @@ off.***\nUse `<p>settings chdel [on or off]` to change."
 
         embed1 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Prefix", value=pref, inline=False).add_field(name="Ignore Symbol", value=igno, inline=False).add_field(name="Publishing Info", value=pubin, inline=False).add_field(name="Fandoms", value=fand, inline=False).add_field(name="Relationships", value=rela, inline=False)  # noqa
 
-        embed2 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Characters", value=char, inline=False).add_field(name="Tags", value=tags, inline=False).add_field(name="Summary", value=sum, inline=False).add_field(name="Summary Length", value=sumlen, inline=False).add_field(name="Delete Link", value=delli, inline=False)  # noqa
+        embed2 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Characters", value=char, inline=False).add_field(name="Tags", value=tags, inline=False).add_field(name="Summary", value=sum, inline=False).add_field(name="Image Previews", value=img, inline=False).add_field(name="Summary Length", value=sumlen, inline=False)  # noqa
 
-        embed3 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Chapter Publishing Info", value=cpubin, inline=False).add_field(name="Chapter Fandoms", value=cfand, inline=False).add_field(name="Chapter Relationships", value=crela, inline=False).add_field(name="Chapter Characters", value=cchar, inline=False).add_field(name="Chapter Tags", value=ctags, inline=False)  # noqa
+        embed3 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Delete Link", value=delli, inline=False).add_field(name="Chapter Publishing Info", value=cpubin, inline=False).add_field(name="Chapter Fandoms", value=cfand, inline=False).add_field(name="Chapter Relationships", value=crela, inline=False).add_field(name="Chapter Characters", value=cchar, inline=False)  # noqa
 
-        embed4 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="chapter Summary", value=csum, inline=False).add_field(name="Chapter Summary Length", value=csumlen, inline=False).add_field(name="Delete Update Command", value=delco, inline=False).add_field(name="Delete Update Errors", value=deler, inline=False).add_field(name="Update Command Enforced", value=delc, inline=False)  # noqa
+        embed4 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Chapter Tags", value=ctags, inline=False).add_field(name="Chapter Summary", value=csum, inline=False).add_field(name="Chapter Summary Length", value=csumlen, inline=False).add_field(name="Delete Update Command", value=delco, inline=False).add_field(name="Delete Update Errors", value=deler, inline=False)  # noqa
+
+        embed5 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Update Command Enforced", value=delc, inline=False)  # noqa
 
         embeds = [
             embed1,
             embed2,
             embed3,
-            embed4
+            embed4,
+            embed5
         ]
 
         paginator = BotEmbedPaginator(ctx, embeds)

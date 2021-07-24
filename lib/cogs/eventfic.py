@@ -5,12 +5,14 @@
 # //          https://www.boost.org/LICENSE_1_0.txt)
 
 # Requires pip install ao3_api
+from ..db import db
 import discord
 from discord.ext.commands import Cog
 import re
 import AO3
 
-from ..db import db
+import warnings
+warnings.simplefilter('ignore', UserWarning)
 
 
 class eventfic(Cog):
@@ -36,6 +38,7 @@ class eventfic(Cog):
         summlen = db.field("SELECT SumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         igncheck = f"{ign}http"
 
@@ -43,8 +46,7 @@ class eventfic(Cog):
             return
 
         if ctx.command is None and igncheck not in message.content and\
-                "https://archiveofourown.org/works/" in message.content or \
-                "https://archiveofourown.org/collections/" in message.content:
+                "works" in message.content:
 
             urls = re.findall(
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
@@ -64,10 +66,11 @@ post updates to your fics."""  # noqa
 
                     try:
                         work = AO3.Work(workid)
+
                     except AO3.utils.AuthError:
                         autherr = """I'm sorry. This fic is available to Registered \
-        Users of AO3 only. In order to protect the author's privacy, I will not \
-        display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+Users of AO3 only. In order to protect the author's privacy, I will not \
+display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
                         await message.channel.send(autherr)
 
                     else:
@@ -121,7 +124,9 @@ post updates to your fics."""  # noqa
 
                         rawtags = ', '.join(work.tags)
                         if len(rawtags) > 1000:
-                            tags = f"{rawtags[0:700]}\n`Click link for more info`"  # noqa
+                            tag = rawtags[0:700]
+                            atag = tag.rsplit(' ', 1)[0]
+                            tags = f"{atag}\n`Click link for more info`"
                         elif len(rawtags) == 0:
                             tags = "*N/A*"
                         else:
@@ -137,13 +142,17 @@ post updates to your fics."""  # noqa
 
                         rawfan = ', '.join(work.fandoms)
                         if len(rawfan) > 1000:
-                            fandoms = f"{rawfan[0:700]}\n`Click link for more info`"  # noqa
+                            fan = rawfan[0:700]
+                            fand = fan.rsplit(' ', 1)[0]
+                            fandoms = f"{fand}\n`Click link for more info`"
                         else:
                             fandoms = rawfan
 
                         ships = ', '.join(work.relationships)
                         if len(ships) > 1000:
-                            relationships = f"{ships[0:700]}\n`Click link for more info`"  # noqa
+                            shi = ships[0:700]
+                            ship = shi.rsplit(' ', 1)[0]
+                            relationships = f"{ship}\n`Click link for more info`"  # noqa
                         elif len(ships) == 0:
                             relationships = "*N/A*"
                         else:
@@ -151,14 +160,18 @@ post updates to your fics."""  # noqa
 
                         chars = ', '.join(work.characters)
                         if len(chars) > 1000:
-                            characters = f"{chars[0:700]}\n`Click link for more info`"  # noqa
+                            cha = chars[0:700]
+                            char = cha.rsplit(' ', 1)[0]
+                            characters = f"{char}\n`Click link for more info`"
                         elif len(chars) == 0:
                             characters = "*N/A*"
                         else:
                             characters = chars
 
                         if len(work.summary) > summlen:
-                            summary = f"{work.summary[0:summlen]}\n`Click link for more info`"  # noqa
+                            sum = work.summary[0:summlen]
+                            summa = sum.rsplit(' ', 1)[0]
+                            summary = f"{summa}\n`Click link for more info`"
                         elif len(work.summary) == 0:
                             summary = "*N/A*"
                         else:
@@ -171,18 +184,41 @@ post updates to your fics."""  # noqa
                             value = 0xE8D506
                         elif work.rating.startswith('M'):
                             value = 0xDE7E28
-                        else:
+                        elif work.rating.startswith('E'):
                             value = 0x9C0000
+                        else:
+                            value = 0xFFFFFF
+
+            # sets rating as icon from AO3
+
+                        if work.rating.startswith('G'):
+                            icon = "<:general:866823809180631040>"
+                        elif work.rating.startswith('T'):
+                            icon = "<:teen:866823893015330826>"
+                        elif work.rating.startswith('M'):
+                            icon = "<:mature:866823956684996628>"
+                        elif work.rating.startswith('E'):
+                            icon = "<:explicit:866824069050269736>"
+                        else:
+                            icon = "<:notrated:866825856236519426>"
 
             # adds image preview for artwork in chapters
-                        images = work.get_images()
-                        if len(images) == 0:
-                            img = "https://i.imgur.com/Ml4X1T6.png"
+                        if image == "on":
+                            try:
+                                images = work.get_images()
+                                if len(images) == 0:
+                                    img = "https://i.imgur.com/Ml4X1T6.png"
+
+                                else:
+                                    chimgs = images.get(1)
+                                    chimg = chimgs[0]
+                                    img = chimg[0]
+
+                            except Exception:
+                                img = "https://i.imgur.com/Ml4X1T6.png"
 
                         else:
-                            chimgs = images.get(1)
-                            chimg = chimgs[0]
-                            img = chimg[0]
+                            img = "https://i.imgur.com/Ml4X1T6.png"
 
             # embed formatting for AO3 work embed
                         try:
@@ -214,7 +250,7 @@ post updates to your fics."""  # noqa
                                 pass
 
                             embedVar.add_field(name="Rating:",
-                                               value=work.rating,
+                                               value=icon,
                                                inline=True)
                             embedVar.add_field(name="Warnings:", value=warn,
                                                inline=True)

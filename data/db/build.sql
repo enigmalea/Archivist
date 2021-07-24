@@ -17,18 +17,17 @@ CREATE TABLE IF NOT EXISTS settings (
   AddTags text DEFAULT "on",
   Summ text DEFAULT "on",
   SumLength integer DEFAULT "700",
-  DelLink text DEFAULT "off",
-  cBasic text DEFAULT "on",
-  cPubInfo text DEFAULT "on",
-  cRate text DEFAULT "on",
-  cFan text DEFAULT "on",
-  cRel text DEFAULT "on",
-  cCh text DEFAULT "on",
-  cAddTags text DEFAULT "on",
-  cSumm text DEFAULT "on",
-  cSumLength integer DEFAULT "700",
-  DelUpdate text DEFAULT "off",
-  DelErr text DEFAULT "off",
-  DelChapter text DEFAULT "off",
-  DelDL text DEFAULT "off"
+  DelLink text DEFAULT "off"
 );
+
+ALTER TABLE settings ADD COLUMN cPubInfo text DEFAULT "on";
+ALTER TABLE settings ADD COLUMN cFan text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN cRel text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN cCh text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN cAddTags text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN cSumm text DEFAULT "on";
+ALTER TABLE settings ADD COLUMN cSumLength integer DEFAULT "700";
+ALTER TABLE settings ADD COLUMN DelUpdate text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN DelErr text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN DelChapter text DEFAULT "off";
+ALTER TABLE settings ADD COLUMN Image text DEFAULT "on";

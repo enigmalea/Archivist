@@ -23,15 +23,6 @@ from discord.ext.commands import when_mentioned_or
 
 from ..db import db
 
-# ========== ERROR LOGGER ===========
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
-                              mode='w')
-handler.setFormatter(logging.Formatter(
-                     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-
 # ========== DECLARES INTENTS ===========
 intents = Intents.default()
 intents.typing = False
@@ -74,7 +65,7 @@ class Bot(BotBase):
         super().__init__(
             command_prefix=get_prefix,
             case_insensitive=True,
-            owner_id=508726665199747100,
+            owner_ids=[508726665199747100, 398431412983824386],
             intents=intents,
             help_command=None,
             activity=discord.Activity(type=discord.ActivityType.watching,
