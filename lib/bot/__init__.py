@@ -6,7 +6,6 @@
 
 # Requires pip install apscheduler
 import discord
-import logging
 from pytz import timezone
 from asyncio import sleep
 from discord import Intents
