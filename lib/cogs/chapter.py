@@ -92,6 +92,10 @@ Please double check the chapter number you provided and try again.'
                             if delcom == "on":
                                 await ctx.message.delete()
 
+                    except AO3.utils.InvalidIdError:
+                        iderr = """This work does not seem to exist. Please try again."""  # noqa
+                        await message.channel.send(iderr)
+
                     except AO3.utils.AuthError:
                         autherr = """I'm sorry. This fic is available to Registered \
 Users of AO3 only. In order to protect the author's privacy, I will not \
@@ -139,12 +143,15 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                     if dd is None:
                         pass
 
-                    for span in dd.find_all("span", {"class": "position"}):
-                        seriesid = int(span.a.attrs["href"].split("/")[-1])
+                    se = []
+                    for work.series in work.series:
+                        ser = AO3.Series(work.series.id)
+                        serurl = f"https://archiveofourown.org/series/{work.series.id}"  # noqa
+                        se.append(f"[{ser.name}]({serurl})")
 
-                    ser = AO3.Series(seriesid)
-                    serurl = f"https://archiveofourown.org/series/{seriesid}"
-                    seri = f"\n**Series:** [{ser.name}]({serurl})"
+                        mse = ', '.join(se)
+
+                    seri = f"\n**Series:** {mse}"
                 else:
                     seri = ""
 

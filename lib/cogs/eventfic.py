@@ -73,6 +73,10 @@ Users of AO3 only. In order to protect the author's privacy, I will not \
 display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
                         await message.channel.send(autherr)
 
+                    except AO3.utils.InvalidIdError:
+                        iderr = """This work does not seem to exist. Please try again."""  # noqa
+                        await message.channel.send(iderr)
+
                     else:
                         warn = ', '.join(work.warnings)
                         pubd = work.date_published.strftime('%b %d, %Y')
@@ -89,13 +93,15 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                             if dd is None:
                                 pass
 
-                            for span in dd.find_all("span", {"class":
-                                                             "position"}):
-                                seriesid = int(span.a.attrs["href"].split("/")[-1])  # noqa
+                            se = []
+                            for work.series in work.series:
+                                ser = AO3.Series(work.series.id)
+                                serurl = f"https://archiveofourown.org/series/{work.series.id}"  # noqa
+                                se.append(f"[{ser.name}]({serurl})")
 
-                            ser = AO3.Series(seriesid)
-                            serurl = f"https://archiveofourown.org/series/{seriesid}"  # noqa
-                            seri = f"\n**Series:** [{ser.name}]({serurl})"
+                                mse = ', '.join(se)
+
+                            seri = f"\n**Series:** {mse}"
                         else:
                             seri = ""
 
