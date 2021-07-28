@@ -500,7 +500,7 @@ link embeds.***\nUse `<p>settings img [on or off]` to change.\n\ufeff"
 link embeds.***\nUse `<p>settings sum [on or off]` to change.\n\ufeff"
 
         sumlen = f"```fix\n {summlen}```***Sets the maximum number of \
-characters for the summary. Default is 700. Must be between 10 and \
+characters for the summary. Default is 700. Must be between 20 and \
 700.***\nUse `<p>settings len [number]` to change.\n\ufeff"
 
         if dellink == "on":
@@ -560,7 +560,7 @@ embeds.***\nUse `<p>settings csum [on or off]` to change.\n\ufeff"
 
         csumlen = f"```fix\n {csummlen}```***Sets the maximum number of \
 characters for the summary in the chapter update embed. Default is 700. Must \
-be between 10 and 700.***\nUse `<p>settings clen [number]` to change.\n\ufeff"
+be between 20 and 700.***\nUse `<p>settings clen [number]` to change.\n\ufeff"
 
         if delcom == "on":
             delco = f"```diff\n+ {delcom}```***If off, any use of `$update` or\
