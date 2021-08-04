@@ -10,6 +10,8 @@ from discord.ext import commands
 from discord.ext.commands import Cog, command
 import AO3
 
+from ..db import db
+
 
 class stats(commands.Cog):
     def __init__(self, bot):
@@ -24,6 +26,7 @@ class stats(commands.Cog):
     @commands.guild_only()
     async def stats(self, ctx, *, fic_link):
         """Shows the stats for the fic."""
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         workid = AO3.utils.workid_from_url(fic_link)
 
         try:
@@ -39,6 +42,15 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 chaps = f"{work.nchapters}/?"
             else:
                 chaps = rawchap
+
+            if num != "," and num == "space":
+                wordi = "{:,}".format(work.words)
+                word = wordi.replace(",", " ")
+            elif num != ",":
+                wordi = "{:,}".format(work.words)
+                word = wordi.replace(",", " ")
+            else:
+                word = "{:,}".format(work.words)
 
             if len(work.metadata["series"]) != 0:
                 dd = work._soup.find("dd", {"class": "series"})
@@ -131,7 +143,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 embedVar.add_field(name="\ufeff", value="\ufeff",
                                    inline=True)
 
-                embedVar.add_field(name="Words:", value=work.words,
+                embedVar.add_field(name="Words:", value=word,
                                    inline=True)
                 embedVar.add_field(name="Hits:", value=work.hits,
                                    inline=True)

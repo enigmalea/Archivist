@@ -420,6 +420,15 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
 
+    @myset.command(name="num")
+    @commands.guild_only()
+    @has_permissions(manage_guild=True)
+    @cooldown(1, 10, commands.BucketType.guild)
+    async def change_numbers(self, ctx, place: str):
+        """Changes the formatting of the thousands place for word count."""  # noqa
+        db.execute("UPDATE settings SET Num = ? WHERE GuildID = ?", place, ctx.guild.id)  # noqa
+        await ctx.send(f"Your thousands will be separated by \"{place}\".")
+
     @myset.command(name="show", aliases=["view"],
                    brief="Shows the server's settings")
     @commands.guild_only()
@@ -446,6 +455,7 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
         delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         pref = f"```fix\n {pre}```Use `<p>prefix set` to change.\n\ufeff"
         igno = f"```fix\n {ign}```Use `<p>ignore set` to change.\n\ufeff"
@@ -591,6 +601,13 @@ post as if normal fic links unless users use `$update` command. If on, users \
 will be reminded to use command instead. Default is \
 off.***\nUse `<p>settings chdel [on or off]` to change."
 
+        if num == " ":
+            number = f"```fix\n Your word count separates on the thousands \
+place using a space.```Use `<p>settings num [symbol]` to change.\n\ufeff"
+        else:
+            number = f"```fix\n Your word count separates on the thousands \
+place using \"{num}\".```Use `<p>settings num [symbol]` to change.\n\ufeff"
+
         embed1 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Prefix", value=pref, inline=False).add_field(name="Ignore Symbol", value=igno, inline=False).add_field(name="Publishing Info", value=pubin, inline=False).add_field(name="Fandoms", value=fand, inline=False).add_field(name="Relationships", value=rela, inline=False)  # noqa
 
         embed2 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Characters", value=char, inline=False).add_field(name="Tags", value=tags, inline=False).add_field(name="Summary", value=sum, inline=False).add_field(name="Image Previews", value=img, inline=False).add_field(name="Summary Length", value=sumlen, inline=False)  # noqa
@@ -599,7 +616,7 @@ off.***\nUse `<p>settings chdel [on or off]` to change."
 
         embed4 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Chapter Tags", value=ctags, inline=False).add_field(name="Chapter Summary", value=csum, inline=False).add_field(name="Chapter Summary Length", value=csumlen, inline=False).add_field(name="Delete Update Command", value=delco, inline=False).add_field(name="Delete Update Errors", value=deler, inline=False)  # noqa
 
-        embed5 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Update Command Enforced", value=delc, inline=False)  # noqa
+        embed5 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Update Command Enforced", value=delc, inline=False).add_field(name="Number Separator", value=number, inline=False)  # noqa
 
         embeds = [
             embed1,

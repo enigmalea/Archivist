@@ -39,6 +39,7 @@ class eventfic(Cog):
         dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         igncheck = f"{ign}http"
 
@@ -81,6 +82,15 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                         warn = ', '.join(work.warnings)
                         pubd = work.date_published.strftime('%b %d, %Y')
                         upd = work.date_updated.strftime('%b %d, %Y')
+
+                        if num != "," and num == "space":
+                            wordi = "{:,}".format(work.words)
+                            word = wordi.replace(",", " ")
+                        elif num != ",":
+                            wordi = "{:,}".format(work.words)
+                            word = wordi.replace(",", " ")
+                        else:
+                            word = "{:,}".format(work.words)
 
                         rawchap = f"{work.nchapters}/{work.expected_chapters}"
                         if "None" in rawchap:
@@ -235,7 +245,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                             embed.set_author(name="Archive of Our Own")
                             embed.set_thumbnail(url=img)
 
-                            embedVar.add_field(name="Words:", value=work.words,
+                            embedVar.add_field(name="Words:", value=word,
                                                inline=True)
                             embedVar.add_field(name="Chapters:", value=chaps,
                                                inline=True)

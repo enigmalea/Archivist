@@ -26,6 +26,7 @@ class eventseries(Cog):
     async def on_message(self, message):
         ctx = await self.bot.get_context(message)
         ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         igncheck = f"{ign}http"
 
@@ -44,10 +45,24 @@ class eventseries(Cog):
             sep = '/'
             s = link.split(sep)[4]
             seriesid = int(s.split(sep)[0])
-            series = AO3.Series(seriesid)
+
+            try:
+                series = AO3.Series(seriesid)
+
+            except AO3.utils.InvalidIdError:
+                iderr = """This series does not seem to exist. Please try again."""  # noqa
+                await message.channel.send(iderr)
+
             seriesurl = f"https://archiveofourown.org/series/{seriesid}"
 
-            series.reload()
+            if num != "," and num == "space":
+                wordi = "{:,}".format(series.words)
+                word = wordi.replace(",", " ")
+            elif num != ",":
+                wordi = "{:,}".format(series.words)
+                word = wordi.replace(",", " ")
+            else:
+                word = "{:,}".format(series.words)
 
             c = []
             for series.creators in series.creators:
@@ -112,7 +127,7 @@ class eventseries(Cog):
                 embedVar.add_field(name="Number of Works:",
                                    value=series.nworks, inline=True)
                 embedVar.add_field(name="Total Word Count:",
-                                   value=series.words, inline=True)
+                                   value=word, inline=True)
                 embedVar.add_field(name="\ufeff", value="\ufeff", inline=True)
 
                 embedVar.add_field(name="Series Notes:",

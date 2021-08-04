@@ -39,6 +39,7 @@ class chapter(Cog):
         delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 
         if "http" in chnum:
             message = """You may have entered required arguments in the
@@ -129,7 +130,23 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                     chtitle = f"**[{ctitle}]({link})**"  # noqa
 
                 fic = f"\n\n▸ [__READ FROM BEGINNING__]({work.url})\n\u200B"
-                words = f"**{chapter.words}** [{work.words}]"
+
+                if num != "," and num == "space":
+                    cwordi = "{:,}".format(chapter.words)
+                    cword = cwordi.replace(",", " ")
+                    wwordi = "{:,}".format(work.words)
+                    wword = wwordi.replace(",", " ")
+                elif num != ",":
+                    cwordi = "{:,}".format(chapter.words)
+                    cword = cwordi.replace(",", num)
+                    wwordi = "{:,}".format(work.words)
+                    wword = wwordi.replace(",", num)
+                else:
+                    cword = "{:,}".format(chapter.words)
+                    wword = "{:,}".format(work.words)
+
+                words = f"**{cword}** [{wword}]"
+
                 warn = ', '.join(work.warnings)
 
                 rawchap = f"{chapter.number}/{work.expected_chapters}"
@@ -210,12 +227,12 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
 
                 if len(work.summary) > summlen:
                     sum = work.summary[0:summlen]
-                    summa = sum.rsplit(' ', 1)[0]
+                    summa = chapter.rsplit(' ', 1)[0]
                     summary = f"{summa}\n`Click link for more info`"
-                elif len(work.summary) == 0:
+                elif len(chapter.summary) == 0:
                     summary = "*N/A*"
                 else:
-                    summary = work.summary
+                    summary = chapter.summary
 
     # sets up changing embed color based on rating of work
                 if work.rating.startswith('G'):

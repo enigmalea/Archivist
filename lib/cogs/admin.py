@@ -11,9 +11,9 @@ import asyncio
 
 from discord.ext import commands
 from discord.ext.commands import Cog, command
-from glob import glob
+from pathlib import Path
 
-COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+COGS = [p.stem for p in Path(".").glob("./lib/cogs/*.py")]
 
 
 class admin(Cog):

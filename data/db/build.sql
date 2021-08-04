@@ -28,5 +28,6 @@ CREATE TABLE IF NOT EXISTS settings (
   DelUpdate text DEFAULT "off",
   DelErr text DEFAULT "off",
   DelChapter text DEFAULT "off",
-  Image text DEFAULT "on"
+  Image text DEFAULT "on",
+  Num text DEFAULT ","
 );

@@ -9,7 +9,7 @@ import discord
 from pytz import timezone
 from asyncio import sleep
 from discord import Intents
-from glob import glob
+from pathlib import Path
 
 import os
 from dotenv import load_dotenv
@@ -31,7 +31,7 @@ intents.presences = False
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
-COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+COGS = [p.stem for p in Path(".").glob("./lib/cogs/*.py")]
 
 
 def get_prefix(bot, message):
