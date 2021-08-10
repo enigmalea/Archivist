@@ -6,6 +6,7 @@
 
 # Requires pip install apscheduler
 import discord
+import logging
 from pytz import timezone
 from asyncio import sleep
 from discord import Intents
@@ -21,6 +22,14 @@ from discord.ext.commands import CommandNotFound, NoPrivateMessage, UserInputErr
 from discord.ext.commands import when_mentioned_or
 
 from ..db import db
+
+
+# ========== SETS UP LOGGING ===========
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 # ========== DECLARES INTENTS ===========
 intents = Intents.default()
