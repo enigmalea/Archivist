@@ -225,9 +225,9 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 else:
                     characters = chars
 
-                if len(work.summary) > summlen:
-                    sum = work.summary[0:summlen]
-                    summa = chapter.rsplit(' ', 1)[0]
+                if len(chapter.summary) > summlen:
+                    sum = chapter.summary[0:summlen]
+                    summa = sum.rsplit(' ', 1)[0]
                     summary = f"{summa}\n`Click link for more info`"
                 elif len(chapter.summary) == 0:
                     summary = "*N/A*"
