@@ -38,9 +38,10 @@ class eventuser(Cog):
 
             urls = re.findall(
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
+
             if urls:
                 links = ''.join(urls)
-                link = links.replace('>', '')
+                link = re.sub('>', '', links)
 
             if "pseuds" in link:
                 sep = '/'

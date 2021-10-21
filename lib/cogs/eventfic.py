@@ -55,12 +55,13 @@ class eventfic(Cog):
 
             for url in urls:
                 if "works" in url and "Sort+and+Filter" not in url:
-                    workid = AO3.utils.workid_from_url(url)
+                    url1 = re.sub('>', '', url)
+                    workid = AO3.utils.workid_from_url(url1)
 
                     if delch == "on" and "chapters" in url:
-                        chaptererr = """You've posted a link which has chapter \
+                        chaptererr = "You've posted a link which has chapter \
         information. This server requires you to use `$update [chapter#] [link]` to \
-        post updates to your fics."""  # noqa
+        post updates to your fics."  # noqa
                         await message.channel.send(chaptererr, delete_after=30)
 
                     else:
@@ -69,13 +70,13 @@ class eventfic(Cog):
                             work = AO3.Work(workid)
 
                         except AO3.utils.AuthError:
-                            autherr = """I'm sorry. This fic is available to Registered \
+                            autherr = "I'm sorry. This fic is available to Registered \
         Users of AO3 only. In order to protect the author's privacy, I will not \
-        display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+        display an embed. Please go to AO3 directly while logged in to view this fic!"  # noqa
                             await message.channel.send(autherr)
 
                         except AO3.utils.InvalidIdError:
-                            iderr = """This work does not seem to exist. Please try again."""  # noqa
+                            iderr = "This work does not seem to exist. Please try again."  # noqa
                             await message.channel.send(iderr)
 
                         else:

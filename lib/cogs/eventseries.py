@@ -44,7 +44,8 @@ class eventseries(Cog):
                 if "series" in url:
                     sep = '/'
                     s = url.split(sep)[4]
-                    seriesid = int(s.split(sep)[0])
+                    s2 = re.sub('>', '', s)
+                    seriesid = int(s2.split(sep)[0])
 
                     try:
                         series = AO3.Series(seriesid)
