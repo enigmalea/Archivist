@@ -26,10 +26,10 @@ class dl(Cog):
     @commands.guild_only()
     async def dl(self, ctx, file_type: str, url: str):
         """
-        Gives you an with a link to download a fic from AO3. Supports azw3, \
+        Gives you an embed with a link to download a fic from AO3. Supports azw3, \
 epub, mobi, pdf, or html.\n▸`<p>dl [file_type] [url]`.
         """
-        dltype = ["azw3", "epbub", "mobi", "pdf", "html"]
+        dltype = ["azw3", "epub", "mobi", "pdf", "html"]
         delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
         delcom = db.field("SELECT DelDL FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
 

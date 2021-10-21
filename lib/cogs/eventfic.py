@@ -54,7 +54,7 @@ class eventfic(Cog):
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
 
             for url in urls:
-                if "works" in url:
+                if "works" in url and "Sort+and+Filter" not in url:
                     workid = AO3.utils.workid_from_url(url)
 
                     if delch == "on" and "chapters" in url:

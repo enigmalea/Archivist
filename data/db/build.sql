@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS settings (
   cSumLength integer DEFAULT "700",
   DelUpdate text DEFAULT "off",
   DelErr text DEFAULT "off",
+  DelDL text DEFAULT "off",
   DelChapter text DEFAULT "off",
   Image text DEFAULT "on",
   Num text DEFAULT ","
