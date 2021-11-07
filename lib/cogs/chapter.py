@@ -4,7 +4,6 @@
 # //    (See accompanying file LICENSE_1_0.txt or copy at
 # //          https://www.boost.org/LICENSE_1_0.txt)
 
-# Requires pip install ao3_api
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, command, MissingRequiredArgument
@@ -57,9 +56,9 @@ wrong order. Please try again using the format \
             pass
 
         elif "works" not in link:
-            message = 'That does not appear to be a link to an AO3 work. \
+            message = "That does not appear to be a link to an AO3 work. \
 Please make sure you are linking to the work and not a series, author, \
-collection, or using a non-AO3 link.'
+collection, or using a non-AO3 link."
             if delerr == "on":
                 await ctx.send(message, delete_after=30)
                 if delcom == "on":
@@ -94,13 +93,13 @@ Please double check the chapter number you provided and try again.'
                                 await ctx.message.delete()
 
                     except AO3.utils.InvalidIdError:
-                        iderr = """This work does not seem to exist. Please try again."""  # noqa
+                        iderr = "This work does not seem to exist. Please try again."  # noqa
                         await message.channel.send(iderr)
 
                     except AO3.utils.AuthError:
-                        autherr = """I'm sorry. This fic is available to Registered \
+                        autherr = "I'm sorry. This fic is available to Registered \
 Users of AO3 only. In order to protect the author's privacy, I will not \
-display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+display an embed. Please go to AO3 directly while logged in to view this fic!"  # noqa
                         if delerr == "on":
                             await ctx.send(autherr, delete_after=30)
                             if delcom == "on":
@@ -234,30 +233,27 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                 else:
                     summary = chapter.summary
 
-    # sets up changing embed color based on rating of work
-                if work.rating.startswith('G'):
-                    value = 0x77A50E
-                elif work.rating.startswith('T'):
-                    value = 0xE8D506
-                elif work.rating.startswith('M'):
-                    value = 0xDE7E28
-                elif work.rating.startswith('E'):
-                    value = 0x9C0000
-                else:
-                    value = 0xFFFFFF
+        # DICT & variable for embed sidebar color
+                rating_bar = dict([
+                    ('General Audiences', 0x77A50E),
+                    ('Teen And Up Audiences', 0xE8D506),
+                    ('Mature', 0xDE7E28),
+                    ('Explicit', 0x9C0000),
+                    ('Not Rated', 0xFFFFFF),
+                ])
 
-    # sets rating as icon from AO3
+                color = rating_bar[work.rating]
 
-                if work.rating.startswith('G'):
-                    icon = "<:general:866823809180631040>"
-                elif work.rating.startswith('T'):
-                    icon = "<:teen:866823893015330826>"
-                elif work.rating.startswith('M'):
-                    icon = "<:mature:866823956684996628>"
-                elif work.rating.startswith('E'):
-                    icon = "<:explicit:866824069050269736>"
-                else:
-                    icon = "<:notrated:866825856236519426>"
+        # DICT & variable for rating icon
+                rating_icon = dict([
+                    ('General Audiences', '<:general:866823809180631040>'),
+                    ('Teen And Up Audiences', '<:teen:866823893015330826>'),
+                    ('Mature', '<:mature:866823956684996628>'),
+                    ('Explicit', '<:explicit:866824069050269736>'),
+                    ('Not Rated', '<:notrated:866825856236519426>'),
+                ])
+
+                icon = rating_icon[work.rating]
 
             # adds image preview for artwork in chapters
                 if image == "on":
@@ -280,7 +276,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
             # embed formatting for AO3 work embed
                 try:
                     embed = embedVar = discord.Embed(
-                        title=work.title, description=desc, color=value)
+                        title=work.title, description=desc, color=color)
 
                     embed.set_author(name="Archive of Our Own")
                     embed.set_thumbnail(url=img)

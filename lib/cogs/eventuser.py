@@ -33,28 +33,30 @@ class eventuser(Cog):
         if message.author == self.bot.user:
             return
 
-        if ctx.command is None and igncheck not in message.content and\
-                "https://archiveofourown.org/users/" in message.content:
+        if ctx.command is None and igncheck not in message.content and \
+                "users" in message.content and "archiveofourown" in \
+                message.content or "ao3" in message.content:
 
             urls = re.findall(
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
 
-            if urls:
-                links = ''.join(urls)
-                link = re.sub('>', '', links)
+            for url in urls:
+                if "users" and "archiveofourown" or "ao3" in url:
 
-            if "pseuds" in link:
-                sep = '/'
-                userid = link.split(sep)[4]
-                dname = link.split(sep)[6]
-                displayname = dname.split()[0]
-                user = AO3.User(userid)
-            else:
-                sep = '/'
-                u = link.split(sep)[4]
-                userid = u.split()[0]
-                displayname = userid
-                user = AO3.User(userid)
+                    if "pseuds" in url:
+                        sep = 'users/'
+                        sep2 = 'pseuds/'
+                        u = url.split(sep)[1]
+                        userid = re.sub('/>', '', u)
+                        dname = url.split(sep2)[1]
+                        displayname = re.sub('/|>', '', dname)
+                        user = AO3.User(userid)
+                    else:
+                        sep = 'users/'
+                        u = url.split(sep)[1]
+                        userid = re.sub('/|>', '', u)
+                        displayname = userid
+                        user = AO3.User(userid)
 
             if len(user.bio) > 1000:
                 bio = f"{user.bio[0:700]}\n`Click link for more info`"

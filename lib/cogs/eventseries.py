@@ -4,7 +4,6 @@
 # //    (See accompanying file LICENSE_1_0.txt or copy at
 # //          https://www.boost.org/LICENSE_1_0.txt)
 
-# Requires pip install ao3_api
 import discord
 from discord.ext.commands import Cog
 import re
@@ -51,7 +50,7 @@ class eventseries(Cog):
                         series = AO3.Series(seriesid)
 
                     except AO3.utils.InvalidIdError:
-                        iderr = """This series does not seem to exist. Please try again."""  # noqa
+                        iderr = "This series does not seem to exist. Please try again."  # noqa
                         await message.channel.send(iderr)
 
                     seriesurl = f"https://archiveofourown.org/series/{seriesid}"

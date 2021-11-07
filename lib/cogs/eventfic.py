@@ -194,30 +194,27 @@ class eventfic(Cog):
                             else:
                                 summary = work.summary
 
-                    # sets up changing embed color based on rating of work
-                            if work.rating.startswith('G'):
-                                value = 0x77A50E
-                            elif work.rating.startswith('T'):
-                                value = 0xE8D506
-                            elif work.rating.startswith('M'):
-                                value = 0xDE7E28
-                            elif work.rating.startswith('E'):
-                                value = 0x9C0000
-                            else:
-                                value = 0xFFFFFF
+                    # DICT & variable for embed sidebar color
+                            rating_bar = dict([
+                                ('General Audiences', 0x77A50E),
+                                ('Teen And Up Audiences', 0xE8D506),
+                                ('Mature', 0xDE7E28),
+                                ('Explicit', 0x9C0000),
+                                ('Not Rated', 0xFFFFFF),
+                            ])
 
-                    # sets rating as icon from AO3
+                            color = rating_bar[work.rating]
 
-                            if work.rating.startswith('G'):
-                                icon = "<:general:866823809180631040>"
-                            elif work.rating.startswith('T'):
-                                icon = "<:teen:866823893015330826>"
-                            elif work.rating.startswith('M'):
-                                icon = "<:mature:866823956684996628>"
-                            elif work.rating.startswith('E'):
-                                icon = "<:explicit:866824069050269736>"
-                            else:
-                                icon = "<:notrated:866825856236519426>"
+                    # DICT & variable for rating icon
+                            rating_icon = dict([
+                                ('General Audiences', '<:general:866823809180631040>'),
+                                ('Teen And Up Audiences', '<:teen:866823893015330826>'),
+                                ('Mature', '<:mature:866823956684996628>'),
+                                ('Explicit', '<:explicit:866824069050269736>'),
+                                ('Not Rated', '<:notrated:866825856236519426>'),
+                            ])
+
+                            icon = rating_icon[work.rating]
 
                     # adds image preview for artwork in chapters
                             if image == "on":
@@ -241,7 +238,7 @@ class eventfic(Cog):
                             try:
                                 embed = embedVar = discord.Embed(
                                     title=work.title, description=desc,
-                                    url=work.url, color=value)
+                                    url=work.url, color=color)
 
                                 embed.set_author(name="Archive of Our Own")
                                 embed.set_thumbnail(url=img)
@@ -321,7 +318,7 @@ class eventfic(Cog):
                                     pass
 
                             except Exception:
-                                pass
+                                raise
 
 
 def setup(bot):

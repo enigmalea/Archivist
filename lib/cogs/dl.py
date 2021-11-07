@@ -35,7 +35,7 @@ epub, mobi, pdf, or html.\n▸`<p>dl [file_type] [url]`.
 
         if file_type not in dltype:
             message = 'The file type you requested is not available; supported \
-file types include: azw3, epbub, mobi, pdf, html. You may also have entered \
+file types include: azw3, epub, mobi, pdf, html. You may also have entered \
 the required arguments in the incorrect order. Please try again using the \
 format `<p>dl [file_type] [link]`.'
             if delerr == "on":
