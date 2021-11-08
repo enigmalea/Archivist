@@ -33,8 +33,8 @@ class eventseries(Cog):
             return
 
         if ctx.command is None and igncheck not in message.content and \
-                "series" in message.content and "archiveofourown" in \
-                message.content or "ao3" in message.content:
+                "archiveofourown.org/series" in message.content or \
+                "ao3.org/series" in message.content:
 
             urls = re.findall(
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
