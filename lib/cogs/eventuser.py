@@ -44,72 +44,53 @@ class eventuser(Cog):
                 if "users" in url:
 
                     if "pseuds" in url:
-                        try:
-                            sep = 'users/'
-                            sep2 = 'pseuds/'
-                            u = url.split(sep)[1]
-                            userid = re.sub('/>', '', u)
-                            dname = url.split(sep2)[1]
-                            displayname = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', dname)
-                            user = AO3.User(userid)
-                        except Exception:
-                            usererr = f"""This user does not exist. Please \
-report this error to the developer by joining the support server and sharing \
-a screenshot.
-**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
-                            await message.channel.send(usererr)
+
+                        sep = 'users/'
+                        sep2 = 'pseuds/'
+                        u = url.split(sep)[1]
+                        userid = re.sub('/>', '', u)
+                        dname = url.split(sep2)[1]
+                        displayname = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', dname)
+                        user = AO3.User(userid)
 
                     else:
-                        try:
-                            sep = 'users/'
-                            u = url.split(sep)[1]
-                            userid = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', u)
-                            displayname = userid
-                            user = AO3.User(userid)
-                        except Exception:
-                            usererr = f"""This user does not exist. Please \
-report this error to the developer by joining the support server and sharing \
-a screenshot.
-**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
-                            await message.channel.send(usererr)
 
-            try:
+                        sep = 'users/'
+                        u = url.split(sep)[1]
+                        userid = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', u)
+                        displayname = userid
+                        user = AO3.User(userid)
+
                 if len(user.bio) > 1000:
                     bio = f"{user.bio[0:700]}\n`Click link for more info`"
                 elif len(user.bio) == 0:
                     bio = "*N/A*"
                 else:
                     bio = user.bio
-            except Exception:
-                usererr = f"""This user does not exist. Please \
-report this error to the developer by joining the support server and sharing \
-a screenshot.
-**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
-                await message.channel.send(usererr)
 
-            desc = f"**Number of Works:** {user.works}\n**Number of Bookmarks:** {user.bookmarks}\n\n**Bio:**\n{bio}"  # noqa
+                desc = f"**Number of Works:** {user.works}\n**Number of Bookmarks:** {user.bookmarks}\n\n**Bio:**\n{bio}"  # noqa
 
-    # embed formatting for AO3 work embed
-            try:
-                embed = embedVar = discord.Embed(
-                    title=displayname, url=user.url, description=desc,
-                    color=0x2F3136)
+        # embed formatting for AO3 work embed
+                try:
+                    embed = embedVar = discord.Embed(
+                        title=displayname, url=user.url, description=desc,
+                        color=0x2F3136)
 
-                embed.set_author(name="Archive of Our Own")
-                embed.set_thumbnail(url="https://i.imgur.com/Ml4X1T6.png")
+                    embed.set_author(name="Archive of Our Own")
+                    embed.set_thumbnail(url="https://i.imgur.com/Ml4X1T6.png")
 
-                embed.set_footer(text='bot not affiliated with OTW or AO3')
+                    embed.set_footer(text='bot not affiliated with OTW or AO3')
 
-    # sends embed
-                await message.channel.send(embed=embedVar)
+        # sends embed
+                    await message.channel.send(embed=embedVar)
 
-                if dellink == "on":
-                    await ctx.message.delete()
-                else:
+                    if dellink == "on":
+                        await ctx.message.delete()
+                    else:
+                        pass
+
+                except Exception:
                     pass
-
-            except Exception:
-                pass
 
 
 def setup(bot):
