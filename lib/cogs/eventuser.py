@@ -34,36 +34,58 @@ class eventuser(Cog):
             return
 
         if ctx.command is None and igncheck not in message.content and \
-                "users" in message.content and "archiveofourown" in \
-                message.content or "ao3" in message.content:
+                "archiveofourown" in message.content or \
+                "ao3" in message.content and "users" in message.content:
 
             urls = re.findall(
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
 
             for url in urls:
-                if "users" and "archiveofourown" or "ao3" in url:
+                if "users" in url:
 
                     if "pseuds" in url:
-                        sep = 'users/'
-                        sep2 = 'pseuds/'
-                        u = url.split(sep)[1]
-                        userid = re.sub('/>', '', u)
-                        dname = url.split(sep2)[1]
-                        displayname = re.sub('/|>', '', dname)
-                        user = AO3.User(userid)
-                    else:
-                        sep = 'users/'
-                        u = url.split(sep)[1]
-                        userid = re.sub('/|>', '', u)
-                        displayname = userid
-                        user = AO3.User(userid)
+                        try:
+                            sep = 'users/'
+                            sep2 = 'pseuds/'
+                            u = url.split(sep)[1]
+                            userid = re.sub('/>', '', u)
+                            dname = url.split(sep2)[1]
+                            displayname = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', dname)
+                            user = AO3.User(userid)
+                        except Exception:
+                            usererr = f"""This user does not exist. Please \
+report this error to the developer by joining the support server and sharing \
+a screenshot.
+**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
+                            await message.channel.send(usererr)
 
-            if len(user.bio) > 1000:
-                bio = f"{user.bio[0:700]}\n`Click link for more info`"
-            elif len(user.bio) == 0:
-                bio = "*N/A*"
-            else:
-                bio = user.bio
+                    else:
+                        try:
+                            sep = 'users/'
+                            u = url.split(sep)[1]
+                            userid = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', u)
+                            displayname = userid
+                            user = AO3.User(userid)
+                        except Exception:
+                            usererr = f"""This user does not exist. Please \
+report this error to the developer by joining the support server and sharing \
+a screenshot.
+**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
+                            await message.channel.send(usererr)
+
+            try:
+                if len(user.bio) > 1000:
+                    bio = f"{user.bio[0:700]}\n`Click link for more info`"
+                elif len(user.bio) == 0:
+                    bio = "*N/A*"
+                else:
+                    bio = user.bio
+            except Exception:
+                usererr = f"""This user does not exist. Please \
+report this error to the developer by joining the support server and sharing \
+a screenshot.
+**Support Server:** https://discord.gg/FzhC9bVFva"""  # noqa
+                await message.channel.send(usererr)
 
             desc = f"**Number of Works:** {user.works}\n**Number of Bookmarks:** {user.bookmarks}\n\n**Bio:**\n{bio}"  # noqa
 
