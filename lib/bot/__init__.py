@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext import commands
-from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import AutoShardedBot as BotBase
 from discord.ext.commands import CommandNotFound, NoPrivateMessage, UserInputError
 from discord.ext.commands import when_mentioned_or
 
@@ -85,6 +85,7 @@ class Bot(BotBase):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name="$help | archivistbot.com")
         )
+
 
     def setup(self):
         for cog in COGS:

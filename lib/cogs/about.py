@@ -33,8 +33,10 @@ class about(Cog):
         uptime = str(datetime.timedelta(seconds=secs))
         version = self.bot.VERSION
         launch = "16 Mar 2021"
+        shard = ctx.guild.shard_id
 
         title = f"About {name}"
+
 
         sup = "Support Server"
         supurl = "https://discord.gg/FzhC9bVFva"
@@ -47,12 +49,13 @@ class about(Cog):
         pri = "Privacy Policy"
         priurl = "https://www.archivistbot.com/privacy-policy"
 
+
         links = f"""<:add:906993610329841734> [{inv}]({invurl})\n❔ \
         [{sup}]({supurl})\n💻 [{web}]({weburl})\n \
         <:twitter:906993635508248596> [{twit}]({twiturl})\n🔒 \
         [{pri}]({priurl})"""
 
-        stats = f"""**Servers:** {servers}\n**Launched:** {launch}"""
+        stats = f"""**Servers:** {servers}\n**Shard ID:** {shard}\n**Launched:** {launch}"""
 
         disc = f"*{name} does not store any user messages. For information on \
         what information the bot stores and how it uses the information \
