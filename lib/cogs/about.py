@@ -22,7 +22,7 @@ class about(Cog):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up('about')
 
-    @command(name="about", brief="Provides info about the bot.")  # noqa
+    @command(name="about", brief="Provides info about the bot.")
     @commands.guild_only()
     async def support(self, ctx):
         """Provides info about Archivist."""
@@ -43,7 +43,7 @@ class about(Cog):
         web = "archivistbot.com"
         weburl = "https://www.archivistbot.com"
         inv = "Invite to Your Server"
-        invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=2148005952&scope=bot"  # noqa
+        invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=294205549632&scope=bot"
         pri = "Privacy Policy"
         priurl = "https://www.archivistbot.com/privacy-policy"
 

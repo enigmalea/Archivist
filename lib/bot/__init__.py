@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import CommandNotFound, NoPrivateMessage, UserInputError  # noqa
+from discord.ext.commands import CommandNotFound, NoPrivateMessage, UserInputError
 from discord.ext.commands import when_mentioned_or
 
 from ..db import db
@@ -28,8 +28,10 @@ from ..db import db
 # ========== SETS UP LOGGING ===========
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(
+    filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 # ========== DECLARES INTENTS ===========
@@ -46,7 +48,8 @@ COGS = [p.stem for p in Path(".").glob("./lib/cogs/*.py")]
 
 def get_prefix(bot, message):
     if message.guild:
-        prefix = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", message.guild.id)  # noqa
+        prefix = db.field(
+            "SELECT Prefix FROM settings WHERE GuildID = ?", message.guild.id)
         return when_mentioned_or(prefix)(bot, message)
 
 
@@ -69,7 +72,8 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
 
-        self.scheduler = AsyncIOScheduler(timezone=timezone('America/New_York'))  # noqa
+        self.scheduler = AsyncIOScheduler(
+            timezone=timezone('America/New_York'))
 
         db.autosave(self.scheduler)
         super().__init__(
@@ -137,11 +141,11 @@ class Bot(BotBase):
         if isinstance(exc, commands.CommandOnCooldown):
             m, s = divmod(exc.retry_after, 60)
             h, m = divmod(m, 60)
-            if int(h) == 0 and int(m) == 0:  # noqa
-                await ctx.send(f"Command on cooldown. You must wait {int(s)} seconds to use this command. ")  # noqa
+            if int(h) == 0 and int(m) == 0:
+                await ctx.send(f"Command on cooldown. You must wait {int(s)} seconds to use this command. ")
 
         elif isinstance(exc, commands.CheckFailure):
-            await ctx.send("You do not have the required permissions for this command.")  # noqa
+            await ctx.send("You do not have the required permissions for this command.")
 
         elif hasattr(exc, "original"):
             raise exc.original

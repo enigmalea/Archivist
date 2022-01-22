@@ -20,7 +20,7 @@ class works(Cog):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up('works')
 
-    @command(name="works", brief="Produces an embed with links to the series' fics.")  # noqa
+    @command(name="works", brief="Produces an embed with links to the series' fics.")  
     @commands.guild_only()
     async def works(self, ctx, *, series_link):
         """Produces an embed with links to the series' fics. Please note the \

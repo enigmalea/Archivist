@@ -60,7 +60,7 @@ class admin(Cog):
         Disconnects bot from Discord.
         """
         await ctx.send("**Archivist** is logging out.")
-        await self.bot.logout()
+        await self.bot.close()
 
     @command(name='reload', brief="Reloads cogs.")
     @commands.is_owner()

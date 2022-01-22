@@ -20,7 +20,7 @@ class ignore(Cog):
             self.bot.cogs_ready.ready_up('ignore')
 
     @commands.group(name="ignore", aliases=["ign"],
-                    brief="Shows or sets ignore symbol depending on the subcommand.")  # noqa
+                    brief="Shows or sets ignore symbol depending on the subcommand.")  
     @commands.guild_only()
     async def ign(self, ctx):
         """
@@ -41,19 +41,19 @@ set a new ignore symbol or `<p>ignore show` to see the current ignore symbol."
     async def change_ignore(self, ctx, new_symbol: str):
         """Sets a custom symbol which tells the bot to ignore an AO3 link.
 
-        __**ɴᴏᴛᴇ:**__ You must have **Manage Server** permissions to use this command."""  # noqa
+        __**ɴᴏᴛᴇ:**__ You must have **Manage Server** permissions to use this command."""  
         if len(new_symbol) > 3:
             await ctx.send("Please select a shorter ignore symbol. The ignore symbol cannot be \
 more than three characters in length.")
 
         else:
-            db.execute("UPDATE settings SET Ign = ? WHERE GuildID = ?", new_symbol, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Ign = ? WHERE GuildID = ?", new_symbol, ctx.guild.id)  
             await ctx.send(f"Ignore symbol has been set to {new_symbol}.")
 
     @ign.command(name="show", brief="Shows the server's ignore symbol.")
     @commands.guild_only()
     async def show_ignore(self, ctx):
-        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  
         await ctx.send(f"Current ignore symbol is `{ign}`.")
 
 

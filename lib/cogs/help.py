@@ -25,7 +25,7 @@ def syntax(command):
             key = "command"
 
             if key not in ("self", "ctx"):
-                params.append(f"[{key}]" if "NoneType" in str(value) else f"<{key}>")  # noqa
+                params.append(f"[{key}]" if "NoneType" in str(value) else f"<{key}>")  
 
     params = " ".join(params)
 
@@ -47,9 +47,9 @@ class HelpMenu(ListPageSource):
         web = "Website"
         weburl = "https://www.archivistbot.com"
         inv = "Invite to Your Server"
-        invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=2148005952&scope=bot"  # noqa
-        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", self.ctx.guild.id)  # noqa
-        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", self.ctx.guild.id)  # noqa
+        invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=294205549632&scope=bot"  
+        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", self.ctx.guild.id)  
+        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", self.ctx.guild.id)  
 
         d = f"""**{name}** is a simple Discord bot which automatically detects \
 AO3 links for works, series, and users and provides more detailed information \
@@ -70,7 +70,7 @@ Links**__\n▸ [{sup}]({supurl})\n▸ [{web}]({weburl})\n▸ [{twit}]({twiturl})
                       color=0x2F3136)
         embed.set_footer(
             icon_url="https://i.imgur.com/Pv5jRoh.png",
-            text=f"Server Prefix: <p> = {pre} | {offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} Commands"  # noqa
+            text=f"Server Prefix: <p> = {pre} | {offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} Commands"  
         )
 
         for name, value in fields:
@@ -82,7 +82,7 @@ Links**__\n▸ [{sup}]({supurl})\n▸ [{web}]({weburl})\n▸ [{twit}]({twiturl})
         fields = []
 
         for entry in entries:
-            fields.append((syntax(entry), entry.help or "No description."))  # noqa
+            fields.append((syntax(entry), entry.help or "No description."))  
 
         return await self.write_page(menu, fields)
 
@@ -113,7 +113,7 @@ class help(Cog):
         return sorted(commandList, key=lambda x: x.name)
 
     async def cmd_help(self, ctx, command):
-        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)  
         embed = Embed(title=f"Help with `{pre}{command}`",
                       description=f"```{syntax(command)}```",
                       color=0x2F3136)
@@ -143,7 +143,7 @@ class help(Cog):
             )
 
         else:
-            filtered_commands = await self.return_filtered_commands(self.bot, ctx)  # noqa
+            filtered_commands = await self.return_filtered_commands(self.bot, ctx)  
 
         if cmd is None:
             menu = MenuPages(source=HelpMenu(ctx, list(filtered_commands)),
@@ -155,7 +155,7 @@ class help(Cog):
             if (command := get(self.bot.commands, name=cmd)):
                 await self.cmd_help(ctx, command)
 
-            elif cmd not in filtered_commands and self.bot.get_command(cmd) is not None:  # noqa
+            elif cmd not in filtered_commands and self.bot.get_command(cmd) is not None:  
                 main = self.bot.get_command(cmd)
                 await self.cmd_help(ctx, main)
 

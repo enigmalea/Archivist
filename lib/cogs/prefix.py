@@ -41,19 +41,21 @@ set a new prefix or `<p>prefix show` to see the current prefix."
     async def change_prefix(self, ctx, new_prefix: str):
         """Sets a new prefix for the bot.
 
-        __**ɴᴏᴛᴇ:**__ You must have **Manage Server** permissions to use this command."""  # noqa
+        __**ɴᴏᴛᴇ:**__ You must have **Manage Server** permissions to use this command."""
 
         if len(new_prefix) > 3:
-            await ctx.send("Please select a shorter prefix. The prefix cannot be more than three characters in length.")  # noqa
+            await ctx.send("Please select a shorter prefix. The prefix cannot be more than three characters in length.")
 
         else:
-            db.execute("UPDATE settings SET Prefix = ? WHERE GuildID = ?", new_prefix, ctx.guild.id)  # noqa
+            db.execute(
+                "UPDATE settings SET Prefix = ? WHERE GuildID = ?", new_prefix, ctx.guild.id)
             await ctx.send(f"Prefix has been set to `{new_prefix}`.")
 
     @pre.command(name="show", brief="Shows the server's prefix")
     @commands.guild_only()
     async def show_prefix(self, ctx):
-        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        pre = db.field(
+            "SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)
         await ctx.send(f"Current prefix is `{pre}`.")
 
 

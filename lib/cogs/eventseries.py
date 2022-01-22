@@ -24,10 +24,18 @@ class eventseries(Cog):
     @Cog.listener()
     async def on_message(self, message):
         ctx = await self.bot.get_context(message)
-        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  
         igncheck = f"{ign}http"
+
+        # checks for message redirect
+        redirect = db.field("SELECT redSer FROM settings WHERE GuildID = ?", ctx.guild.id)
+
+        if redirect != "":
+            channel = redirect
+        else:
+            channel = ctx
 
         if message.author == self.bot.user:
             return
@@ -37,7 +45,7 @@ class eventseries(Cog):
                 "ao3.org/series" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  
 
             for url in urls:
                 if "series" in url:
@@ -50,7 +58,7 @@ class eventseries(Cog):
                         series = AO3.Series(seriesid)
 
                     except AO3.utils.InvalidIdError:
-                        iderr = "This series does not seem to exist. Please try again."  # noqa
+                        iderr = "This series does not seem to exist. Please try again."  
                         await message.channel.send(iderr)
 
                     seriesurl = f"https://archiveofourown.org/series/{seriesid}"
@@ -87,7 +95,7 @@ class eventseries(Cog):
                         auth = aut
 
                     if len(series.description) > 1000:
-                        describe = f"{series.description[0:700]}\n`Click link for more info`"  # noqa
+                        describe = f"{series.description[0:700]}\n`Click link for more info`"  
                     elif len(series.description) == 0:
                         describe = "*N/A*"
                     else:
@@ -139,12 +147,16 @@ class eventseries(Cog):
                         embed.set_footer(text='bot not affiliated with OTW or AO3')
 
             # sends embed
-                        await message.channel.send(embed=embedVar)
+                        await channel.send(embed=embedVar)
 
                         if dellink == "on":
-                            await ctx.message.delete()
+                            await channel.message.delete()
                         else:
                             pass
+
+                    except discord.errors.Forbidden:
+                        permerror = "The embed can't be posted in the selected channel. Please make sure the bot has permissions to see and post in the channel."  
+                        await message.channel.send(permerror)
 
                     except Exception:
                         raise

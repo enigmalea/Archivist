@@ -19,7 +19,7 @@ class support(Cog):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up('support')
 
-    @command(name="support", brief="Gives users ideas on how to support the bot.")  # noqa
+    @command(name="support", brief="Gives users ideas on how to support the bot.")  
     @commands.guild_only()
     async def support(self, ctx):
         """Want to help support **Archivist**? This command can tell you \

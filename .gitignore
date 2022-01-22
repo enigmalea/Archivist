@@ -163,3 +163,4 @@ Thumbs.db
 botlist.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+.vscode/settings.json

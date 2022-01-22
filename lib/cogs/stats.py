@@ -26,7 +26,7 @@ class stats(commands.Cog):
     @commands.guild_only()
     async def stats(self, ctx, *, fic_link):
         """Shows the stats for the fic."""
-        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  
         workid = AO3.utils.workid_from_url(fic_link)
 
         try:
@@ -34,7 +34,7 @@ class stats(commands.Cog):
         except AO3.utils.AuthError:
             autherr = """I'm sorry. This fic is available to Registered \
 Users of AO3 only. In order to protect the author's privacy, I will not \
-display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+display an embed. Please go to AO3 directly while logged in to view this fic!"""  
             await ctx.channel.send(autherr)
         else:
             rawchap = f"{work.nchapters}/{work.expected_chapters}"
@@ -59,10 +59,10 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
 
                 for span in dd.find_all("span", {"class":
                                                  "position"}):
-                    seriesid = int(span.a.attrs["href"].split("/")[-1])  # noqa
+                    seriesid = int(span.a.attrs["href"].split("/")[-1])  
 
                 ser = AO3.Series(seriesid)
-                serurl = f"https://archiveofourown.org/series/{seriesid}"  # noqa
+                serurl = f"https://archiveofourown.org/series/{seriesid}"  
                 seri = f"\n**Series:** [{ser.name}]({serurl})"
             else:
                 seri = ""
@@ -74,7 +74,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
                     un = work.authors.username.split(sep1)[0]
                     a = work.authors.username.split(sep1)[1]
                     b = a[:-1]
-                    li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  # noqa
+                    li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  
                     c.append(f"[{un}]({li})")
                 else:
                     un = work.authors.username

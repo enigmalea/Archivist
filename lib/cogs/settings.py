@@ -45,11 +45,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles publishing date row on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET PubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET PubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Publishing date row has been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET PubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET PubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Publishing date row has been turned `{onoff}`.")
 
         else:
@@ -63,11 +63,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles fandoms on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET Fan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Fan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Fandoms have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET Fan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Fan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Fandoms have been turned `{onoff}`.")
 
         else:
@@ -81,11 +81,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles image previews on or off in fic and chapter embeds."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Image previews have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Image = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Image previews been turned `{onoff}`.")
 
         else:
@@ -99,11 +99,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles relationships on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET Rel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Rel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Relationships have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET Rel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Rel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Relationships have been turned `{onoff}`.")
 
         else:
@@ -117,11 +117,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles characters on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET Ch = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Ch = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Characters have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET Ch = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Ch = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Characters have been turned `{onoff}`.")
 
         else:
@@ -135,11 +135,11 @@ settings and subcommands use `< p > settings show`."
         """Toggles additional tags on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET AddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET AddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Additional tags have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET AddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET AddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Additional tags been turned `{onoff}`.")
 
         else:
@@ -150,14 +150,14 @@ settings and subcommands use `< p > settings show`."
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_sum(self, ctx, onoff: str):
-        """Toggles summary on or off."""  # noqa
+        """Toggles summary on or off."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET Summ = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Summ = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Summary has been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET Summ = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET Summ = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Summary has been turned `{onoff}`.")
 
         else:
@@ -173,10 +173,10 @@ settings and subcommands use `< p > settings show`."
         """
 
         if length < 20 or length > 700:
-            await ctx.send("Invalid length. Must be 20-700 characters. To hide summary use `<p>settings sum off` instead.")  # noqa
+            await ctx.send("Invalid length. Must be 20-700 characters. To hide summary use `<p>settings sum off` instead.")  
 
         else:
-            db.execute("UPDATE settings SET SumLength = ? WHERE GuildID = ?", length, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET SumLength = ? WHERE GuildID = ?", length, ctx.guild.id)  
             await ctx.send(f"Summary length has been set to `{length}`.")
 
     @myset.command(name="del")
@@ -184,7 +184,7 @@ settings and subcommands use `< p > settings show`."
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_del(self, ctx, onoff: str):
-        """Toggles link delete on or off. Set to off by default."""  # noqa
+        """Toggles link delete on or off. Set to off by default."""  
 
         if onoff == "on":
             channel = ctx.channel
@@ -203,14 +203,14 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
 
             try:
                 await self.bot.wait_for('message', check=is_yes, timeout=15.0)
-                db.execute("UPDATE settings SET DelLink = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+                db.execute("UPDATE settings SET DelLink = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
                 await ctx.send(f"Delete link has been turned `{onoff}`.")
 
             except asyncio.TimeoutError:
                 return await ctx.channel.send('Setting update cancelled.')
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET DelLink = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelLink = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Delete link has been turned `{onoff}`.")
 
         else:
@@ -224,12 +224,12 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
         """Toggles publishing date row for chapters on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cPubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter publishing date row has been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET cPubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Chapter publishing date row has been turned `{onoff}`.")  
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cPubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter publishing date row has been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET cPubInfo = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Chapter publishing date row has been turned `{onoff}`.")  
 
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
@@ -242,11 +242,11 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
         """Toggles fandoms for chapter updates on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cFan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cFan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter fandoms for have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cFan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cFan = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter fandoms have been turned `{onoff}`.")
 
         else:
@@ -260,12 +260,12 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
         """Toggles chapter relationships on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cRel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter relationships have been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET cRel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Chapter relationships have been turned `{onoff}`.")  
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cRel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter relationships have been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET cRel = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Chapter relationships have been turned `{onoff}`.")  
 
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
@@ -278,11 +278,11 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
         """Toggles chapter characters on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cCh = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cCh = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter characters have been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cCh = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cCh = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter characters have been turned `{onoff}`.")
 
         else:
@@ -296,11 +296,11 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
         """Toggles additional tags for chapters on or off."""
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cAddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter additional tags have been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET cAddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Chapter additional tags have been turned `{onoff}`.")  
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cAddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cAddTags = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter additional tags been turned `{onoff}`.")
 
         else:
@@ -311,14 +311,14 @@ sending `yes`. Update will cancel automatically after 15 seconds.***
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_csum(self, ctx, onoff: str):
-        """Toggles chapter summary on or off."""  # noqa
+        """Toggles chapter summary on or off."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET cSumm = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cSumm = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter summary has been turned `{onoff}`.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET cSumm = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET cSumm = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send(f"Chapter summary has been turned `{onoff}`.")
 
         else:
@@ -335,11 +335,11 @@ off`.
         """
 
         if length < 20 or length > 700:
-            await ctx.send("Invalid length. Must be 20-700 characters. To hide chapter summary use `<p>settings sum off` instead.")  # noqa
+            await ctx.send("Invalid length. Must be 20-700 characters. To hide chapter summary use `<p>settings sum off` instead.")  
 
         else:
-            db.execute("UPDATE settings SET cSumLength = ? WHERE GuildID = ?", length, ctx.guild.id)  # noqa
-            await ctx.send(f"Chapter summary length has been set to `{length}`.")  # noqa
+            db.execute("UPDATE settings SET cSumLength = ? WHERE GuildID = ?", length, ctx.guild.id)  
+            await ctx.send(f"Chapter summary length has been set to `{length}`.")  
 
     @myset.command(name="cdel")
     @commands.guild_only()
@@ -347,15 +347,15 @@ off`.
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_cdel(self, ctx, onoff: str):
         """Toggles the setting to delete the chapter command. Set to \
-off by default."""  # noqa
+off by default."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Delete chapter commmand has been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Delete chapter commmand has been turned `{onoff}`.")  
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
-            await ctx.send(f"Delete chapter command has been turned `{onoff}`.")  # noqa
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
+            await ctx.send(f"Delete chapter command has been turned `{onoff}`.")  
 
         else:
             await ctx.send("Invalid setting. Valid choices are `on` or `off`.")
@@ -366,15 +366,15 @@ off by default."""  # noqa
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_derr(self, ctx, onoff: str):
         """Toggles the setting to delete the chapter command. Set to \
-off by default."""  # noqa
+off by default."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET DelErr = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelErr = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Bot has been set to automatically delete error \
 messages related to chapter updates commands.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET DelErr = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelErr = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Auto deletion of error messages related to \
 chapter update commands has been turned off.")
 
@@ -388,15 +388,15 @@ chapter update commands has been turned off.")
     async def change_chapterdelete(self, ctx, onoff: str):
         """Deletes fic links which contain chapter specific info and which \
 are posted without using `$update` command. Instructs users that chapter links \
-must use `$update [chapter#] [link]` in this server."""  # noqa
+must use `$update [chapter#] [link]` in this server."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET DelChapter = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelChapter = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Chapter links will not be autodetected. Users \
 must use `$update [chapter#] [link]` in this server to post chapter updates.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET DelChapter = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelChapter = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Chapter links will be autodetected.")
 
         else:
@@ -407,14 +407,14 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_deletechaptercommand(self, ctx, onoff: str):
-        """Deletes chapter command executions."""  # noqa
+        """Deletes chapter command executions."""  
 
         if onoff == "on":
-            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Chapter commands will be deleted after execution.")
 
         elif onoff == "off":
-            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  # noqa
+            db.execute("UPDATE settings SET DelUpdate = ? WHERE GuildID = ?", onoff, ctx.guild.id)  
             await ctx.send("Chapter commands will not be deleted.")
 
         else:
@@ -425,8 +425,8 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_numbers(self, ctx, place: str):
-        """Changes the formatting of the thousands place for word count."""  # noqa
-        db.execute("UPDATE settings SET Num = ? WHERE GuildID = ?", place, ctx.guild.id)  # noqa
+        """Changes the formatting of the thousands place for word count."""  
+        db.execute("UPDATE settings SET Num = ? WHERE GuildID = ?", place, ctx.guild.id)  
         await ctx.send(f"Your thousands will be separated by \"{place}\".")
 
     @myset.command(name="show", aliases=["view"],
@@ -434,38 +434,38 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
     @commands.guild_only()
     async def show_settings(self, ctx):
 
-        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        pub = db.field("SELECT PubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        fan = db.field("SELECT Fan FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        rel = db.field("SELECT Rel FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cha = db.field("SELECT Ch FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        ta = db.field("SELECT AddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summ = db.field("SELECT Summ FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summlen = db.field("SELECT SumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cpub = db.field("SELECT cPubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cfan = db.field("SELECT cFan FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        crel = db.field("SELECT cRel FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        ccha = db.field("SELECT cCh FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cta = db.field("SELECT cAddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        csumm = db.field("SELECT cSumm FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        csummlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        pre = db.field("SELECT Prefix FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        pub = db.field("SELECT PubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        fan = db.field("SELECT Fan FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        rel = db.field("SELECT Rel FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        cha = db.field("SELECT Ch FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        ta = db.field("SELECT AddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        summ = db.field("SELECT Summ FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        summlen = db.field("SELECT SumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        cpub = db.field("SELECT cPubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        cfan = db.field("SELECT cFan FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        crel = db.field("SELECT cRel FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        ccha = db.field("SELECT cCh FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        cta = db.field("SELECT cAddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        csumm = db.field("SELECT cSumm FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        csummlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  
 
         pref = f"```fix\n {pre}```Use `<p>prefix set` to change.\n\ufeff"
         igno = f"```fix\n {ign}```Use `<p>ignore set` to change.\n\ufeff"
 
         if pub == "on":
             pubin = f"```diff\n+ {pub}```***If off, hides the row with publishing \
-dates in fic link embeds.***\nUse `<p>settings pub [on or off]` to change.\n\ufeff"  # noqa
+dates in fic link embeds.***\nUse `<p>settings pub [on or off]` to change.\n\ufeff"  
         else:
             pubin = f"```diff\n- {pub}```***If off, hides the row with publishing \
-dates in fic link embeds.***\nUse `<p>settings pub [on or off]` to change.\n\ufeff"  # noqa
+dates in fic link embeds.***\nUse `<p>settings pub [on or off]` to change.\n\ufeff"  
 
         if fan == "on":
             fand = f"```diff\n+ {fan}```***If off, hides fandoms in fic link \
@@ -528,35 +528,35 @@ their link. Please consider asking members to surround their links with \
 
         if cpub == "on":
             cpubin = f"```diff\n+ {cpub}```***If off, hides the row with publishing \
-dates in chapter update embeds.***\nUse `<p>settings cpub [on or off]` to change.\n\ufeff"  # noqa
+dates in chapter update embeds.***\nUse `<p>settings cpub [on or off]` to change.\n\ufeff"  
         else:
             cpubin = f"```diff\n- {cpub}```***If off, hides the row with publishing \
-dates in chapter update embeds.***\nUse `<p>settings cpub [on or off]` to change.\n\ufeff"  # noqa
+dates in chapter update embeds.***\nUse `<p>settings cpub [on or off]` to change.\n\ufeff"  
 
         if cfan == "on":
             cfand = f"```diff\n+ {cfan}```***If off, hides fandoms in \
-chaper update embeds.***\nUse `<p>settings cfan [on or off]` to change.\n\ufeff"  # noqa
+chaper update embeds.***\nUse `<p>settings cfan [on or off]` to change.\n\ufeff"  
         else:
             cfand = f"```diff\n- {cfan}```***If off, hides fandoms in \
-chapter update embeds.***\nUse `<p>settings cfan [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings cfan [on or off]` to change.\n\ufeff"  
 
         if crel == "on":
             crela = f"```diff\n+ {crel}```***If off, hides relationships in \
-chapter update embeds.***\nUse `<p>settings crel [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings crel [on or off]` to change.\n\ufeff"  
         else:
             crela = f"```diff\n- {crel}```***If off, hides relationships in \
-chapter update embeds.***\nUse `<p>settings crel [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings crel [on or off]` to change.\n\ufeff"  
 
         if ccha == "on":
             cchar = f"```diff\n+ {ccha}```***If off, hides characters in \
-chapter update embeds.***\nUse `<p>settings ccha [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings ccha [on or off]` to change.\n\ufeff"  
         else:
             cchar = f"```diff\n- {ccha}```***If off, hides characters in \
-chapter update embeds.***\nUse `<p>settings ccha [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings ccha [on or off]` to change.\n\ufeff"  
 
         if cta == "on":
             ctags = f"```diff\n+ {cta}```***If off, hides additional tags in \
-chapter update embeds.***\nUse `<p>settings ctag [on or off]` to change.\n\ufeff"  # noqa
+chapter update embeds.***\nUse `<p>settings ctag [on or off]` to change.\n\ufeff"  
         else:
             ctags = f"```diff\n- {cta}```***If off, hides additional tags in fic \
 link embeds.***\nUse `<p>settings ctag [on or off]` to change.\n\ufeff"
@@ -608,15 +608,15 @@ place using a space.```Use `<p>settings num [symbol]` to change.\n\ufeff"
             number = f"```fix\n Your word count separates on the thousands \
 place using \"{num}\".```Use `<p>settings num [symbol]` to change.\n\ufeff"
 
-        embed1 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Prefix", value=pref, inline=False).add_field(name="Ignore Symbol", value=igno, inline=False).add_field(name="Publishing Info", value=pubin, inline=False).add_field(name="Fandoms", value=fand, inline=False).add_field(name="Relationships", value=rela, inline=False)  # noqa
+        embed1 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Prefix", value=pref, inline=False).add_field(name="Ignore Symbol", value=igno, inline=False).add_field(name="Publishing Info", value=pubin, inline=False).add_field(name="Fandoms", value=fand, inline=False).add_field(name="Relationships", value=rela, inline=False)  
 
-        embed2 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Characters", value=char, inline=False).add_field(name="Tags", value=tags, inline=False).add_field(name="Summary", value=sum, inline=False).add_field(name="Image Previews", value=img, inline=False).add_field(name="Summary Length", value=sumlen, inline=False)  # noqa
+        embed2 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Characters", value=char, inline=False).add_field(name="Tags", value=tags, inline=False).add_field(name="Summary", value=sum, inline=False).add_field(name="Image Previews", value=img, inline=False).add_field(name="Summary Length", value=sumlen, inline=False)  
 
-        embed3 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Delete Link", value=delli, inline=False).add_field(name="Chapter Publishing Info", value=cpubin, inline=False).add_field(name="Chapter Fandoms", value=cfand, inline=False).add_field(name="Chapter Relationships", value=crela, inline=False).add_field(name="Chapter Characters", value=cchar, inline=False)  # noqa
+        embed3 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Delete Link", value=delli, inline=False).add_field(name="Chapter Publishing Info", value=cpubin, inline=False).add_field(name="Chapter Fandoms", value=cfand, inline=False).add_field(name="Chapter Relationships", value=crela, inline=False).add_field(name="Chapter Characters", value=cchar, inline=False)  
 
-        embed4 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Chapter Tags", value=ctags, inline=False).add_field(name="Chapter Summary", value=csum, inline=False).add_field(name="Chapter Summary Length", value=csumlen, inline=False).add_field(name="Delete Update Command", value=delco, inline=False).add_field(name="Delete Update Errors", value=deler, inline=False)  # noqa
+        embed4 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Chapter Tags", value=ctags, inline=False).add_field(name="Chapter Summary", value=csum, inline=False).add_field(name="Chapter Summary Length", value=csumlen, inline=False).add_field(name="Delete Update Command", value=delco, inline=False).add_field(name="Delete Update Errors", value=deler, inline=False)  
 
-        embed5 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Update Command Enforced", value=delc, inline=False).add_field(name="Number Separator", value=number, inline=False)  # noqa
+        embed5 = discord.Embed(title="Current Server Settings", color=0x2F3136).add_field(name="Update Command Enforced", value=delc, inline=False).add_field(name="Number Separator", value=number, inline=False)  
 
         embeds = [
             embed1,

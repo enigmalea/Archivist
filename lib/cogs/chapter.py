@@ -28,17 +28,25 @@ class chapter(Cog):
         """
         Shows an embed for chapter updates.\n▸`<p>update [chapter#] [link]`
         """
-        pub = db.field("SELECT cPubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        fan = db.field("SELECT cFan FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        rel = db.field("SELECT cRel FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cha = db.field("SELECT cCh FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        ta = db.field("SELECT cAddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summ = db.field("SELECT cSumm FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        pub = db.field("SELECT cPubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        fan = db.field("SELECT cFan FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        rel = db.field("SELECT cRel FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        cha = db.field("SELECT cCh FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        ta = db.field("SELECT cAddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        summ = db.field("SELECT cSumm FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        summlen = db.field("SELECT cSumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)
+
+        # checks for message redirect
+        redirect = db.field("SELECT redCh FROM settings WHERE GuildID = ?", ctx.guild.id)
+
+        if redirect != "":
+            channel = redirect
+        else:
+            channel = ctx
 
         if "http" in chnum:
             message = """You may have entered required arguments in the
@@ -93,13 +101,13 @@ Please double check the chapter number you provided and try again.'
                                 await ctx.message.delete()
 
                     except AO3.utils.InvalidIdError:
-                        iderr = "This work does not seem to exist. Please try again."  # noqa
-                        await message.channel.send(iderr)
+                        iderr = "This work does not seem to exist. Please try again."  
+                        await ctx.message.channel.send(iderr)
 
                     except AO3.utils.AuthError:
                         autherr = "I'm sorry. This fic is available to Registered \
 Users of AO3 only. In order to protect the author's privacy, I will not \
-display an embed. Please go to AO3 directly while logged in to view this fic!"  # noqa
+display an embed. Please go to AO3 directly while logged in to view this fic!"  
                         if delerr == "on":
                             await ctx.send(autherr, delete_after=30)
                             if delcom == "on":
@@ -122,11 +130,11 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
                 if len(chapter.title) != 0:
                     title = f"Chapter {chapter.number}: {chapter.title}"
                     ctitle = title.upper()
-                    chtitle = f"**[{ctitle}]({link})**"  # noqa
+                    chtitle = f"**[{ctitle}]({link})**"  
                 else:
                     title = f"Chapter {chapter.number}"
                     ctitle = title.upper()
-                    chtitle = f"**[{ctitle}]({link})**"  # noqa
+                    chtitle = f"**[{ctitle}]({link})**"  
 
                 fic = f"\n\n▸ [__READ FROM BEGINNING__]({work.url})\n\u200B"
 
@@ -162,7 +170,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
                     se = []
                     for work.series in work.series:
                         ser = AO3.Series(work.series.id)
-                        serurl = f"https://archiveofourown.org/series/{work.series.id}"  # noqa
+                        serurl = f"https://archiveofourown.org/series/{work.series.id}"  
                         se.append(f"[{ser.name}]({serurl})")
 
                         mse = ', '.join(se)
@@ -178,7 +186,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
                         un = work.authors.username.split(sep1)[0]
                         a = work.authors.username.split(sep1)[1]
                         b = a[:-1]
-                        li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  # noqa
+                        li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  
                         c.append(f"[{un}]({li})")
                     else:
                         un = work.authors.username
@@ -210,7 +218,7 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
 
                 ships = ', '.join(work.relationships)
                 if len(ships) > 1000:
-                    relationships = f"{ships[0:700]}\n`Click link for more info`"  # noqa
+                    relationships = f"{ships[0:700]}\n`Click link for more info`"  
                 elif len(ships) == 0:
                     relationships = "*N/A*"
                 else:
@@ -337,10 +345,14 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
                     embed.set_footer(text='bot not affiliated with OTW or AO3')
 
             # sends embed
-                    await ctx.send(embed=embedVar)
+                    await channel.send(embed=embedVar)
 
                     if delcom == "on":
-                        await ctx.message.delete()
+                        await channel.message.delete()
+
+                except discord.errors.Forbidden:
+                    permerror = "The embed can't be posted in the selected channel. Please make sure the bot has permissions to see and post in the channel."  
+                    await ctx.channel.send(permerror)
 
                 except Exception:
                     pass
@@ -348,8 +360,8 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"  
     @ch_update.error
     async def missingarg(self, ctx, error):
         if isinstance(error, MissingRequiredArgument):
-            delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-            delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+            delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  
+            delcom = db.field("SELECT DelUpdate FROM settings WHERE GuildID = ?", ctx.guild.id)  
             missingarg = 'This command requires two arguments: chapter number \
 and a link to a fic. Please try again using the format \
 `<p>update [chapter#] [link]`, i.e. \

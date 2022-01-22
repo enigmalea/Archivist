@@ -30,8 +30,8 @@ class dl(Cog):
 epub, mobi, pdf, or html.\n▸`<p>dl [file_type] [url]`.
         """
         dltype = ["azw3", "epub", "mobi", "pdf", "html"]
-        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delcom = db.field("SELECT DelDL FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  
+        delcom = db.field("SELECT DelDL FROM settings WHERE GuildID = ?", ctx.guild.id)  
 
         if file_type not in dltype:
             message = 'The file type you requested is not available; supported \
@@ -76,7 +76,7 @@ collection, or using a non-AO3 link.'
 
                     dltitle = '%20'.join(title.split(' ')[:4])
 
-                    link = f"https://archiveofourown.org/downloads/{workid}/{dltitle}.{file_type}"  # noqa
+                    link = f"https://archiveofourown.org/downloads/{workid}/{dltitle}.{file_type}"  
 
                     c = []
                     for work.authors in work.authors:
@@ -85,7 +85,7 @@ collection, or using a non-AO3 link.'
                             un = work.authors.username.split(sep1)[0]
                             a = work.authors.username.split(sep1)[1]
                             b = a[:-1]
-                            li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  # noqa
+                            li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  
                             c.append(f"[{un}]({li})")
                         else:
                             un = work.authors.username
@@ -128,9 +128,9 @@ FORGET TO VISIT AO3 TO LEAVE KUDOS OR COMMENTS! ☆"
                             color=0x2F3136)
 
                         embed.set_author(name="Archive of Our Own")
-                        embed.set_thumbnail(url="https://i.imgur.com/Ml4X1T6.png")  # noqa
+                        embed.set_thumbnail(url="https://i.imgur.com/Ml4X1T6.png")  
 
-                        embed.set_footer(text='bot not affiliated with OTW or AO3')  # noqa
+                        embed.set_footer(text='bot not affiliated with OTW or AO3')  
 
             # sends embed
                         await ctx.channel.send(embed=embedVar)
@@ -144,7 +144,7 @@ FORGET TO VISIT AO3 TO LEAVE KUDOS OR COMMENTS! ☆"
                 except AO3.utils.AuthError:
                     autherr = """I'm sorry. This fic is available to Registered \
 Users of AO3 only. In order to protect the author's privacy, I will not \
-display an embed. Please go to AO3 directly while logged in to view this fic!"""  # noqa
+display an embed. Please go to AO3 directly while logged in to view this fic!"""  
                     if delerr == "on":
                         await ctx.send(autherr, delete_after=30)
                         if delcom == "on":
@@ -157,8 +157,8 @@ display an embed. Please go to AO3 directly while logged in to view this fic!"""
     @dl.error
     async def missingarg(self, ctx, error):
         if isinstance(error, MissingRequiredArgument):
-            delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-            delcom = db.field("SELECT DelDL FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+            delerr = db.field("SELECT DelErr FROM settings WHERE GuildID = ?", ctx.guild.id)  
+            delcom = db.field("SELECT DelDL FROM settings WHERE GuildID = ?", ctx.guild.id)  
             missingarg = 'This command requires two arguments: file type \
 and a link to a fic. Please try again using the format \
 `<p>dl [file_type] [link]`, i.e. \

@@ -28,30 +28,38 @@ class eventfic(Cog):
     async def on_message(self, message):
         ctx = await self.bot.get_context(message)
 
-        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        pub = db.field("SELECT PubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        fan = db.field("SELECT Fan FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        rel = db.field("SELECT Rel FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        cha = db.field("SELECT Ch FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        ta = db.field("SELECT AddTags FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summ = db.field("SELECT Summ FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        summlen = db.field("SELECT SumLength FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        image = db.field("SELECT Image FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
-        num = db.field("SELECT Num FROM settings WHERE GuildID = ?", ctx.guild.id)  # noqa
+        ign = db.field("SELECT Ign FROM settings WHERE GuildID = ?", ctx.guild.id)
+        pub = db.field("SELECT PubInfo FROM settings WHERE GuildID = ?", ctx.guild.id)
+        fan = db.field("SELECT Fan FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        rel = db.field("SELECT Rel FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        cha = db.field("SELECT Ch FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        ta = db.field("SELECT AddTags FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        summ = db.field("SELECT Summ FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        summlen = db.field("SELECT SumLength FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        dellink = db.field("SELECT DelLink FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        delch = db.field("SELECT DelChapter FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        image = db.field("SELECT Image FROM settings WHERE GuildID = ?",  ctx.guild.id)
+        num = db.field("SELECT Num FROM settings WHERE GuildID = ?",  ctx.guild.id)
 
         igncheck = f"{ign}http"
 
+        # checks for message redirect
+        redirect = db.field("SELECT redFic FROM settings WHERE GuildID = ?", ctx.guild.id)
+
         if message.author == self.bot.user:
             return
+
+        if redirect != "":
+            channel = self.bot.get_channel(int(redirect))
+        else:
+            channel = ctx
 
         if ctx.command is None and igncheck not in message.content and \
                 "archiveofourown.org/" in message.content or \
                 "ao3.org/" in message.content and "works/" in message.content:
 
             urls = re.findall(
-                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  # noqa
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  
 
             for url in urls:
                 if "works" in url and "Sort+and+Filter" not in url:
@@ -61,7 +69,7 @@ class eventfic(Cog):
                     if delch == "on" and "chapters" in url:
                         chaptererr = "You've posted a link which has chapter \
         information. This server requires you to use `$update [chapter#] [link]` to \
-        post updates to your fics."  # noqa
+        post updates to your fics."  
                         await message.channel.send(chaptererr, delete_after=30)
 
                     else:
@@ -72,11 +80,11 @@ class eventfic(Cog):
                         except AO3.utils.AuthError:
                             autherr = "I'm sorry. This fic is available to Registered \
         Users of AO3 only. In order to protect the author's privacy, I will not \
-        display an embed. Please go to AO3 directly while logged in to view this fic!"  # noqa
+        display an embed. Please go to AO3 directly while logged in to view this fic!"  
                             await message.channel.send(autherr)
 
                         except AO3.utils.InvalidIdError:
-                            iderr = "This work does not seem to exist. Please try again."  # noqa
+                            iderr = "This work does not seem to exist. Please try again."  
                             await message.channel.send(iderr)
 
                         else:
@@ -107,7 +115,7 @@ class eventfic(Cog):
                                 se = []
                                 for work.series in work.series:
                                     ser = AO3.Series(work.series.id)
-                                    serurl = f"https://archiveofourown.org/series/{work.series.id}"  # noqa
+                                    serurl = f"https://archiveofourown.org/series/{work.series.id}"  
                                     se.append(f"[{ser.name}]({serurl})")
 
                                     mse = ', '.join(se)
@@ -123,7 +131,7 @@ class eventfic(Cog):
                                     un = work.authors.username.split(sep1)[0]
                                     a = work.authors.username.split(sep1)[1]
                                     b = a[:-1]
-                                    li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  # noqa
+                                    li = f"https://archiveofourown.org/users/{b}/pseuds/{un}"  
                                     c.append(f"[{un}]({li})")
                                 else:
                                     un = work.authors.username
@@ -151,7 +159,7 @@ class eventfic(Cog):
 
                             rawcats = ', '.join(work.categories)
                             if len(rawcats) > 1000:
-                                categories = f"{rawcats[0:700]}\n`Click link for more info`"  # noqa
+                                categories = f"{rawcats[0:700]}\n`Click link for more info`"  
                             elif len(rawcats) == 0:
                                 categories = "*N/A*"
                             else:
@@ -169,7 +177,7 @@ class eventfic(Cog):
                             if len(ships) > 1000:
                                 shi = ships[0:700]
                                 ship = shi.rsplit(' ', 1)[0]
-                                relationships = f"{ship}\n`Click link for more info`"  # noqa
+                                relationships = f"{ship}\n`Click link for more info`"  
                             elif len(ships) == 0:
                                 relationships = "*N/A*"
                             else:
@@ -307,15 +315,19 @@ class eventfic(Cog):
                                 else:
                                     pass
 
-                                embed.set_footer(text='bot not affiliated with OTW or AO3')  # noqa
+                                embed.set_footer(text='bot not affiliated with OTW or AO3')  
 
                     # sends embed
-                                await message.channel.send(embed=embedVar)
+                                await channel.send(embed=embedVar)
 
                                 if dellink == "on":
-                                    await ctx.message.delete()
+                                    await channel.message.delete()
                                 else:
                                     pass
+                            
+                            except discord.errors.Forbidden:
+                                permerror = "The embed can't be posted in the selected channel. Please make sure the bot has permissions to see and post in the channel."  
+                                await message.channel.send(permerror)
 
                             except Exception:
                                 raise

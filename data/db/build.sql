@@ -30,5 +30,9 @@ CREATE TABLE IF NOT EXISTS settings (
   DelDL text DEFAULT "off",
   DelChapter text DEFAULT "off",
   Image text DEFAULT "on",
-  Num text DEFAULT ","
+  Num text DEFAULT ",",
+  redFic text DEFAULT "",
+  redCh text DEFAULT "",
+  redSer text DEFAULT "",
+  redUse text DEFAULT ""
 );
