@@ -33,7 +33,7 @@ class eventseries(Cog):
         redirect = db.field("SELECT redSer FROM settings WHERE GuildID = ?", ctx.guild.id)
 
         if redirect != "":
-            channel = redirect
+            channel = self.bot.get_channel(int(redirect))
         else:
             channel = ctx
 
