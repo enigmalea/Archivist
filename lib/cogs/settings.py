@@ -425,7 +425,7 @@ must use `$update [chapter#] [link]` in this server to post chapter updates.")
     @has_permissions(manage_guild=True)
     @cooldown(1, 10, commands.BucketType.guild)
     async def change_numbers(self, ctx, place: str):
-        """Changes the formatting of the thousands place for word count."""  
+        """Changes the formatting of the thousands place for word count."""
         db.execute("UPDATE settings SET Num = ? WHERE GuildID = ?", place, ctx.guild.id)  
         await ctx.send(f"Your thousands will be separated by \"{place}\".")
 

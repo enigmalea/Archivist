@@ -62,7 +62,7 @@ class eventfic(Cog):
                 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content.strip())  
 
             for url in urls:
-                if "works" in url and "Sort+and+Filter" not in url:
+                if "works" in url and "Sort" not in url:
                     url1 = re.sub('>', '', url)
                     workid = AO3.utils.workid_from_url(url1)
 
