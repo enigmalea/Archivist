@@ -47,7 +47,7 @@ class about(Cog):
         inv = "Invite to Your Server"
         invurl = "https://discord.com/api/oauth2/authorize?client_id=812505952959856690&permissions=294205549632&scope=bot"
         pri = "Privacy Policy"
-        priurl = "https://www.archivistbot.com/privacy-policy"
+        priurl = "https://www.archivistbot.com/privacy"
 
 
         links = f"""<:add:906993610329841734> [{inv}]({invurl})\n❔ \
