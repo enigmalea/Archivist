@@ -55,17 +55,22 @@ class eventuser(Cog):
 
                         sep = 'users/'
                         sep2 = 'pseuds/'
+                        sep3 = '/'
                         u = url.split(sep)[1]
-                        userid = u.split(sep2)[0]
+                        rawuserid = u.split(sep2)[0]
+                        userid = rawuserid.split(sep3)[0]
                         dname = url.split(sep2)[1]
-                        displayname = unquote(re.sub('\>', '', dname))
+                        rawdname = dname.split(sep3)[0]
+                        displayname = unquote(re.sub('\>', '', rawdname))
                         user = AO3.User(userid)
 
                     else:
 
                         sep = 'users/'
+                        sep2 = '/'
                         u = url.split(sep)[1]
-                        userid = re.sub('[^A-Za-z0-9_]+', '', u)
+                        rawuserid = u.split(sep2)[0]
+                        userid = re.sub('[^A-Za-z0-9_]+', '', rawuserid)
                         displayname = userid
                         user = AO3.User(userid)
 
