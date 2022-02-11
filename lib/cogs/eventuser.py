@@ -11,7 +11,7 @@ import re
 import AO3
 
 from ..db import db
-
+from urllib.parse import unquote
 
 class eventuser(Cog):
     def __init__(self, bot):
@@ -56,16 +56,16 @@ class eventuser(Cog):
                         sep = 'users/'
                         sep2 = 'pseuds/'
                         u = url.split(sep)[1]
-                        userid = re.sub('/>', '', u)
+                        userid = u.split(sep2)[0]
                         dname = url.split(sep2)[1]
-                        displayname = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', dname)
+                        displayname = unquote(re.sub('\>', '', dname))
                         user = AO3.User(userid)
 
                     else:
 
                         sep = 'users/'
                         u = url.split(sep)[1]
-                        userid = re.sub('[!@#$%^&*()-=+:;,.><"/\|]', '', u)
+                        userid = re.sub('[^A-Za-z0-9_]+', '', u)
                         displayname = userid
                         user = AO3.User(userid)
 
